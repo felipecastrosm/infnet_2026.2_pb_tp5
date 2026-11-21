@@ -1,0 +1,1623 @@
+[
+  {
+    "titulo": "Estado do modelo",
+    "quando": "2026-11-21T10:19:56",
+    "requisicao": {
+      "metodo": "GET",
+      "url": "http://127.0.0.1:8020/llm/status",
+      "params": null,
+      "corpo": null
+    },
+    "status": 200,
+    "tempo_total_s": 0.0,
+    "resposta": {
+      "estado": "pronto",
+      "pronto": true,
+      "modelo": "Qwen/Qwen3-1.7B",
+      "dispositivo": "mps",
+      "dtype": "float16",
+      "parametros_milhoes": 1720.6,
+      "carregado_em": "2026-11-21T10:19:53.207181",
+      "tempo_carregamento_s": 2.5,
+      "memoria_modelo_mb": 3296.2,
+      "memoria_processo_mb": 1385.9,
+      "requisicoes_atendidas": 0,
+      "limites": {
+        "timeout_s": 90.0,
+        "espera_fila_s": 30.0,
+        "max_tokens_entrada": 3000
+      },
+      "erro": null,
+      "tarefas": [
+        "POST /processar_texto",
+        "POST /llm/perguntar",
+        "POST /llm/relatorio",
+        "POST /agente/recomendar",
+        "POST /conversas/{id}/mensagens"
+      ]
+    }
+  },
+  {
+    "titulo": "Resumo de uma notícia",
+    "quando": "2026-11-21T10:19:56",
+    "requisicao": {
+      "metodo": "POST",
+      "url": "http://127.0.0.1:8020/processar_texto",
+      "params": null,
+      "corpo": {
+        "texto": "A fonte solar respondeu por 73% da expansão da matriz elétrica brasileira entre janeiro e agosto de 2026, com 3,5 GW adicionados. A capacidade total de geração centralizada do país já supera 220 GW, segundo a ANEEL. Para a ABSOLAR, o resultado mostra a competitividade da fonte, mas o setor alerta para os cortes de geração (curtailment) que reduzem a receita das usinas no Nordeste.",
+        "tarefa": "resumo",
+        "max_palavras": 40
+      }
+    },
+    "status": 200,
+    "tempo_total_s": 1.66,
+    "resposta": {
+      "tarefa": "resumo",
+      "entrada": {
+        "n_caracteres": 383,
+        "n_palavras": 65,
+        "n_tokens": 195,
+        "inicio": "A fonte solar respondeu por 73% da expansão da matriz elétrica brasileira entre janeiro e agosto de 2026, com 3,5 GW adi"
+      },
+      "resultado": {
+        "tipo": "resumo",
+        "resumo": "A fonte solar contribuiu com 73% da expansão da matriz elétrica brasileira entre janeiro e agosto de 2026, adicionando 3,5 GW, enquanto a capacidade centralizada atingiu 220 GW.",
+        "n_palavras_resumo": 28,
+        "taxa_compressao": 0.431,
+        "cortado": false
+      },
+      "modelo": {
+        "nome": "Qwen/Qwen3-1.7B",
+        "dispositivo": "mps",
+        "dtype": "float16",
+        "parametros_milhoes": 1720.6
+      },
+      "uso": {
+        "tokens_entrada": 195,
+        "tokens_saida": 100,
+        "tempo_s": 1.65,
+        "tokens_por_s": 60.5,
+        "em_cache": false
+      },
+      "processado_em": "2026-11-21T10:19:58.148447"
+    },
+    "destaque": "**Resumo gerado:** A fonte solar contribuiu com 73% da expansão da matriz elétrica brasileira entre janeiro e agosto de 2026, adicionando 3,5 GW, enquanto a capacidade centralizada atingiu 220 GW."
+  },
+  {
+    "titulo": "Sentimento para quem quer instalar",
+    "quando": "2026-11-21T10:19:58",
+    "requisicao": {
+      "metodo": "POST",
+      "url": "http://127.0.0.1:8020/processar_texto",
+      "params": null,
+      "corpo": {
+        "texto": "A fonte solar respondeu por 73% da expansão da matriz elétrica brasileira entre janeiro e agosto de 2026, com 3,5 GW adicionados. A capacidade total de geração centralizada do país já supera 220 GW, segundo a ANEEL. Para a ABSOLAR, o resultado mostra a competitividade da fonte, mas o setor alerta para os cortes de geração (curtailment) que reduzem a receita das usinas no Nordeste.",
+        "tarefa": "sentimento",
+        "ponto_de_vista": "setor_solar"
+      }
+    },
+    "status": 200,
+    "tempo_total_s": 1.27,
+    "resposta": {
+      "tarefa": "sentimento",
+      "entrada": {
+        "n_caracteres": 383,
+        "n_palavras": 65,
+        "n_tokens": 118,
+        "inicio": "A fonte solar respondeu por 73% da expansão da matriz elétrica brasileira entre janeiro e agosto de 2026, com 3,5 GW adi"
+      },
+      "resultado": {
+        "tipo": "sentimento",
+        "sentimento": "neutro",
+        "confianca": 0.9967,
+        "probabilidades": {
+          "positivo": 0.0033,
+          "neutro": 0.9967,
+          "negativo": 0.0
+        },
+        "ponto_de_vista": "setor_solar",
+        "justificativa": "O texto apresenta informações objetivas sobre o desempenho da energia solar no Brasil, incluindo crescimento e dados técnicos, mas também menciona alertas sobre cortes de geração, mantendo um tom equilibrado."
+      },
+      "modelo": {
+        "nome": "Qwen/Qwen3-1.7B",
+        "dispositivo": "mps",
+        "dtype": "float16",
+        "parametros_milhoes": 1720.6
+      },
+      "uso": {
+        "tokens_entrada": 491,
+        "tokens_saida": 52,
+        "tempo_s": 1.27,
+        "tokens_por_s": 41.0,
+        "em_cache": false
+      },
+      "processado_em": "2026-11-21T10:19:59.420614"
+    },
+    "destaque": "**Sentimento:** neutro (100%). O texto apresenta informações objetivas sobre o desempenho da energia solar no Brasil, incluindo crescimento e dados técnicos, mas também menciona alertas sobre cortes de geração, mantendo um tom equilibrado."
+  },
+  {
+    "titulo": "Agente consultor (Curitiba, preocupação com o inverno)",
+    "quando": "2026-11-21T10:19:59",
+    "requisicao": {
+      "metodo": "POST",
+      "url": "http://127.0.0.1:8020/agente/recomendar",
+      "params": null,
+      "corpo": {
+        "cidade": "Curitiba (PR)",
+        "consumo_kwh_mes": 250,
+        "tarifa": 0.92,
+        "ligacao": "bifasica",
+        "objetivo": "Me preocupa o inverno: a geração cai muito? Vale a pena mesmo assim?"
+      }
+    },
+    "status": 200,
+    "tempo_total_s": 11.82,
+    "resposta": {
+      "id": "6f5e4d7ebcac",
+      "criado_em": "2026-11-21T10:20:11",
+      "perfil": {
+        "cidade": "Curitiba (PR)",
+        "consumo_kwh_mes": 250.0,
+        "tarifa": 0.92,
+        "ligacao": "bifasica",
+        "custo_kwp": 3000.0,
+        "desempenho": 0.8,
+        "potencia_kwp": null,
+        "reajuste_tarifa": 0.0
+      },
+      "objetivo": "Me preocupa o inverno: a geração cai muito? Vale a pena mesmo assim?",
+      "passos": [
+        {
+          "n": 1,
+          "acao": "potencial_solar",
+          "titulo": "Potencial solar do local",
+          "decisao": {
+            "modo": "regra",
+            "motivo": "única ação disponível neste passo",
+            "probabilidades": {
+              "potencial_solar": 1.0
+            }
+          },
+          "resumo": "Curitiba (PR) recebe em média 4,39 kWh/m²/dia com os painéis inclinados a 21° (CRESESB), 9º lugar entre 10 capitais (potencial entre os mais baixos das capitais). Melhor mês: dez (5,08); pior mês: jun (3,52). No último ano, a NASA mediu 4,31 kWh/m²/dia no plano horizontal (2,9% em relação à média histórica).",
+          "tempo_s": 0.0
+        },
+        {
+          "n": 2,
+          "acao": "comparar_capitais",
+          "titulo": "Comparação com as capitais",
+          "decisao": {
+            "modo": "modelo",
+            "motivo": "o modelo deu 53% de probabilidade a esta ação",
+            "probabilidades": {
+              "comparar_capitais": 0.5253,
+              "dimensionar_sistema": 0.4637,
+              "noticias_setor": 0.0109
+            }
+          },
+          "resumo": "Com o mesmo consumo e tarifa, Curitiba (PR) fica em 9º lugar em tempo de retorno entre 10 capitais (1º = retorno mais rápido; retorno entre os mais lentos). Melhor: Fortaleza (CE); pior: Manaus (AM); payback mediano das capitais: 2,7 anos.",
+          "tempo_s": 0.25
+        },
+        {
+          "n": 3,
+          "acao": "noticias_setor",
+          "titulo": "Notícias do setor",
+          "decisao": {
+            "modo": "modelo",
+            "motivo": "o modelo deu 73% de probabilidade a esta ação",
+            "probabilidades": {
+              "noticias_setor": 0.7292,
+              "dimensionar_sistema": 0.2708
+            }
+          },
+          "resumo": "Das 54 notícias do setor, 24 tratam de tarifa, regras ou custos (sentimento: 12 positivo, 11 neutro, 1 negativo). Destaques: \"ANEEL aprova reajuste nas tarifas da Equatorial Pará; veja os índices por classe\" (neutro); \"Projeto quer impedir novas cobranças sobre consumidores com energia solar\" (positivo); \"Reforma tributária: ANEEL propõe consultas sobre PIS/Cofins e créditos no setor elétrico\" (neutro).",
+          "tempo_s": 0.18
+        },
+        {
+          "n": 4,
+          "acao": "dimensionar_sistema",
+          "titulo": "Dimensionamento do sistema",
+          "decisao": {
+            "modo": "regra",
+            "motivo": "única ação disponível neste passo",
+            "probabilidades": {
+              "dimensionar_sistema": 1.0
+            }
+          },
+          "resumo": "Sistema de 2,20 kWp (4 módulos de 550 W, cerca de 10,4 m² de telhado), potência calculada para compensar o consumo. Gera 235,1 kWh por mês em média, 94,1% do consumo de 250 kWh/mês (a distribuidora cobra no mínimo 50 kWh/mês na ligação bifasica).",
+          "tempo_s": 0.0
+        },
+        {
+          "n": 5,
+          "acao": "analise_financeira",
+          "titulo": "Análise financeira",
+          "decisao": {
+            "modo": "modelo",
+            "motivo": "o modelo deu 100% de probabilidade a esta ação",
+            "probabilidades": {
+              "analise_financeira": 0.9998,
+              "sazonalidade": 0.0002,
+              "impacto_ambiental": 0.0001
+            }
+          },
+          "resumo": "Investimento de R$ 6.600,00. Economia de R$ 151,45 por mês no 1º ano, já descontados o Fio B (14,7% a menos) e a manutenção. Retorno do investimento (payback) em 3,8 anos, taxa interna de retorno de 26,3% ao ano. Em 25 anos, economia de R$ 42.882,27 (6,5 vezes o investimento). Viabilidade boa.",
+          "tempo_s": 0.42
+        },
+        {
+          "n": 6,
+          "acao": "sazonalidade",
+          "titulo": "Geração mês a mês",
+          "decisao": {
+            "modo": "modelo",
+            "motivo": "o modelo deu 100% de probabilidade a esta ação",
+            "probabilidades": {
+              "sazonalidade": 0.9961,
+              "impacto_ambiental": 0.0039,
+              "finalizar": 0.0
+            }
+          },
+          "resumo": "A geração varia 49,1% entre o melhor mês (dez, 277,2 kWh) e o pior (jun, 185,9 kWh). Meses em que a geração fica abaixo do consumo: fev, abr, mai, jun, jul, ago, set, out. Sobram 62 kWh de créditos por ano nos meses de excedente, que abatem a conta dos meses mais fracos.",
+          "tempo_s": 0.49
+        },
+        {
+          "n": 7,
+          "acao": "impacto_ambiental",
+          "titulo": "Impacto ambiental (ODS)",
+          "decisao": {
+            "modo": "modelo",
+            "motivo": "o modelo deu 100% de probabilidade a esta ação",
+            "probabilidades": {
+              "impacto_ambiental": 1.0,
+              "finalizar": 0.0
+            }
+          },
+          "resumo": "Evita 109 kg de CO2 por ano e 2,6 toneladas em 25 anos, gerando 66,5 MWh de energia limpa. 94,1% do consumo passa a ser atendido por energia solar. A matriz elétrica brasileira já é pouco poluente (38,5 kg de CO2 por MWh), então o maior ganho social é o acesso a energia mais barata (ODS 7).",
+          "tempo_s": 0.35
+        },
+        {
+          "n": 8,
+          "acao": "finalizar",
+          "titulo": "Finalizar e recomendar",
+          "decisao": {
+            "modo": "regra",
+            "motivo": "única ação disponível neste passo",
+            "probabilidades": {
+              "finalizar": 1.0
+            }
+          },
+          "resumo": "",
+          "tempo_s": 0.0
+        }
+      ],
+      "resultados": {
+        "potencial_solar": {
+          "cidade": "Curitiba (PR)",
+          "irradiacao_media": 4.39,
+          "inclinacao_graus": 21,
+          "ganho_inclinacao_pct": 4.8,
+          "irradiacao_horizontal": 4.19,
+          "mensal": {
+            "jan": 4.93,
+            "fev": 5.01,
+            "mar": 4.71,
+            "abr": 4.27,
+            "mai": 3.72,
+            "jun": 3.52,
+            "jul": 3.62,
+            "ago": 4.57,
+            "set": 4.08,
+            "out": 4.32,
+            "nov": 4.91,
+            "dez": 5.08
+          },
+          "melhor_mes": "dez",
+          "pior_mes": "jun",
+          "posicao_ranking": 9,
+          "total_capitais": 10,
+          "nasa_ultimo_ano": 4.31,
+          "nasa_dias": 359,
+          "diferenca_nasa_pct": 2.9,
+          "estacao": "Curitiba",
+          "distancia_km": 3.9
+        },
+        "comparar_capitais": {
+          "capitais": [
+            {
+              "cidade": "Fortaleza (CE)",
+              "irradiacao_media": 5.7,
+              "potencia_kwp": 1.44,
+              "investimento_rs": 4320.0,
+              "payback_anos": 2.4,
+              "economia_25_anos_rs": 40836.07,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Brasília (DF)",
+              "irradiacao_media": 5.47,
+              "potencia_kwp": 1.5,
+              "investimento_rs": 4500.0,
+              "payback_anos": 2.5,
+              "economia_25_anos_rs": 40773.58,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Recife (PE)",
+              "irradiacao_media": 5.48,
+              "potencia_kwp": 1.5,
+              "investimento_rs": 4500.0,
+              "payback_anos": 2.5,
+              "economia_25_anos_rs": 40808.56,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Belo Horizonte (MG)",
+              "irradiacao_media": 5.36,
+              "potencia_kwp": 1.53,
+              "investimento_rs": 4590.0,
+              "payback_anos": 2.6,
+              "economia_25_anos_rs": 40698.62,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Salvador (BA)",
+              "irradiacao_media": 5.41,
+              "potencia_kwp": 1.52,
+              "investimento_rs": 4560.0,
+              "payback_anos": 2.6,
+              "economia_25_anos_rs": 40828.53,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Rio de Janeiro (RJ)",
+              "irradiacao_media": 4.93,
+              "potencia_kwp": 1.67,
+              "investimento_rs": 5010.0,
+              "payback_anos": 2.8,
+              "economia_25_anos_rs": 40766.14,
+              "co2_evitado_kg_ano": 93.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Porto Alegre (RS)",
+              "irradiacao_media": 4.67,
+              "potencia_kwp": 1.76,
+              "investimento_rs": 5280.0,
+              "payback_anos": 3.0,
+              "economia_25_anos_rs": 40631.04,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "São Paulo (SP)",
+              "irradiacao_media": 4.64,
+              "potencia_kwp": 1.77,
+              "investimento_rs": 5310.0,
+              "payback_anos": 3.0,
+              "economia_25_anos_rs": 40606.06,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Curitiba (PR)",
+              "irradiacao_media": 4.39,
+              "potencia_kwp": 1.87,
+              "investimento_rs": 5610.0,
+              "payback_anos": 3.2,
+              "economia_25_anos_rs": 40531.06,
+              "co2_evitado_kg_ano": 92.0,
+              "classificacao": "excelente"
+            },
+            {
+              "cidade": "Manaus (AM)",
+              "irradiacao_media": 4.33,
+              "potencia_kwp": 1.9,
+              "investimento_rs": 5700.0,
+              "payback_anos": 3.2,
+              "economia_25_anos_rs": 40610.34,
+              "co2_evitado_kg_ano": 93.0,
+              "classificacao": "excelente"
+            }
+          ],
+          "melhor": "Fortaleza (CE)",
+          "pior": "Manaus (AM)",
+          "payback_mediano_anos": 2.7,
+          "cidade": "Curitiba (PR)",
+          "posicao_payback": 9,
+          "total_capitais": 10
+        },
+        "noticias_setor": {
+          "disponivel": true,
+          "total": 54,
+          "sentimentos": {
+            "positivo": 28,
+            "neutro": 25,
+            "negativo": 1
+          },
+          "relevantes": 24,
+          "sentimentos_relevantes": {
+            "positivo": 12,
+            "neutro": 11,
+            "negativo": 1
+          },
+          "destaques": [
+            {
+              "titulo": "ANEEL aprova reajuste nas tarifas da Equatorial Pará; veja os índices por classe",
+              "fonte": "Canal Solar",
+              "data": "2026-09-17",
+              "url": "https://canalsolar.com.br/aneel-aprova-reajuste-tarifas-equatorial-para/",
+              "sentimento": "neutro",
+              "resumo_ia": "A ANEEL aprovou um reajuste anual de 6,70% nas tarifas da Equatorial Pará, com variação média de 6,94% para todos os grupos de consumo. O maior aumento foi de 8,09% para consumidores de alta tensão, enquanto a baixa tensão teve um reajuste de 6,66%. Os valores variam conforme o tipo de consumo, e a agência não detalhou os componentes que influenciaram o índice final."
+            },
+            {
+              "titulo": "Projeto quer impedir novas cobranças sobre consumidores com energia solar",
+              "fonte": "Canal Solar",
+              "data": "2026-09-16",
+              "url": "https://canalsolar.com.br/projeto-impedir-novas-cobrancas-sobre-consumidores/",
+              "sentimento": "positivo",
+              "resumo_ia": "O projeto de lei, apresentado pelo deputado José Medeiros (PL-MT), visa proteger consumidores com sistemas de geração distribuída de energia solar, proibindo cobranças retroativas e garantindo direitos econômicos adquiridos. Ele estabelece que novas cobranças devem ser aprovadas por lei federal e que a ANEEL não pode criar encargos adicionais."
+            },
+            {
+              "titulo": "Reforma tributária: ANEEL propõe consultas sobre PIS/Cofins e créditos no setor elétrico",
+              "fonte": "Canal Solar",
+              "data": "2026-10-16",
+              "url": "https://canalsolar.com.br/reforma-tributaria-aneel-consultas-imposto-creditos/",
+              "sentimento": "neutro",
+              "resumo_ia": "A ANEEL propôs consultas públicas sobre a adaptação da regulação elétrica à reforma tributária, incluindo a retirada de PIS/Pasep e Cofins dos contratos regulados e o aproveitamento de créditos tributários. A proposta visa ajustar os mecanismos regulatórios para que os benefícios tributários sejam considerados nas tarifas, mantendo o equilíbrio econômico-financeiro."
+            }
+          ]
+        },
+        "dimensionar_sistema": {
+          "potencia_kwp": 2.2,
+          "potencia_necessaria_kwp": 1.87,
+          "origem_potencia": "calculada para compensar o consumo",
+          "modulos": 4,
+          "area_m2": 10.4,
+          "consumo_kwh_mes": 250.0,
+          "disponibilidade_kwh_mes": 50,
+          "ligacao": "bifasica",
+          "compensavel_kwh_mes": 200.0,
+          "geracao_kwh_ano": 2822.0,
+          "geracao_kwh_mes": 235.1,
+          "produtividade_kwh_kwp_ano": 1282.0,
+          "cobertura_consumo_pct": 94.1,
+          "desempenho": 0.8
+        },
+        "analise_financeira": {
+          "investimento_rs": 6600.0,
+          "custo_kwp": 3000.0,
+          "tarifa": 0.92,
+          "reajuste_tarifa": 0.0,
+          "economia_ano1_rs": 1817.42,
+          "economia_mes_rs": 151.45,
+          "desconto_fio_b_ano1_pct": 14.7,
+          "payback_anos": 3.8,
+          "economia_25_anos_rs": 42882.27,
+          "lucro_25_anos_rs": 36282.27,
+          "retorno_sobre_investimento": 6.5,
+          "tir_pct": 26.3,
+          "classificacao": "boa",
+          "fluxo_caixa": [
+            {
+              "ano": 0,
+              "economia_rs": 0.0,
+              "acumulado_rs": -6600.0
+            },
+            {
+              "ano": 1,
+              "economia_rs": 1817.42,
+              "acumulado_rs": -4782.58
+            },
+            {
+              "ano": 2,
+              "economia_rs": 1752.51,
+              "acumulado_rs": -3030.07
+            },
+            {
+              "ano": 3,
+              "economia_rs": 1709.23,
+              "acumulado_rs": -1320.84
+            },
+            {
+              "ano": 4,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 388.4
+            },
+            {
+              "ano": 5,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 2097.63
+            },
+            {
+              "ano": 6,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 3806.86
+            },
+            {
+              "ano": 7,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 5516.09
+            },
+            {
+              "ano": 8,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 7225.32
+            },
+            {
+              "ano": 9,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 8934.56
+            },
+            {
+              "ano": 10,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 10643.79
+            },
+            {
+              "ano": 11,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 12353.02
+            },
+            {
+              "ano": 12,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 14062.25
+            },
+            {
+              "ano": 13,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 15771.48
+            },
+            {
+              "ano": 14,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 17480.72
+            },
+            {
+              "ano": 15,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 19189.95
+            },
+            {
+              "ano": 16,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 20899.18
+            },
+            {
+              "ano": 17,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 22608.41
+            },
+            {
+              "ano": 18,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 24317.64
+            },
+            {
+              "ano": 19,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 26026.88
+            },
+            {
+              "ano": 20,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 27736.11
+            },
+            {
+              "ano": 21,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 29445.34
+            },
+            {
+              "ano": 22,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 31154.57
+            },
+            {
+              "ano": 23,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 32863.8
+            },
+            {
+              "ano": 24,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 34573.04
+            },
+            {
+              "ano": 25,
+              "economia_rs": 1709.23,
+              "acumulado_rs": 36282.27
+            }
+          ]
+        },
+        "sazonalidade": {
+          "meses": [
+            {
+              "mes": "jan",
+              "geracao_kwh": 269.0,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": 19.0
+            },
+            {
+              "mes": "fev",
+              "geracao_kwh": 246.9,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -3.1
+            },
+            {
+              "mes": "mar",
+              "geracao_kwh": 257.0,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": 7.0
+            },
+            {
+              "mes": "abr",
+              "geracao_kwh": 225.5,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -24.5
+            },
+            {
+              "mes": "mai",
+              "geracao_kwh": 203.0,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -47.0
+            },
+            {
+              "mes": "jun",
+              "geracao_kwh": 185.9,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -64.1
+            },
+            {
+              "mes": "jul",
+              "geracao_kwh": 197.5,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -52.5
+            },
+            {
+              "mes": "ago",
+              "geracao_kwh": 249.3,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -0.7
+            },
+            {
+              "mes": "set",
+              "geracao_kwh": 215.4,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -34.6
+            },
+            {
+              "mes": "out",
+              "geracao_kwh": 235.7,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": -14.3
+            },
+            {
+              "mes": "nov",
+              "geracao_kwh": 259.2,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": 9.2
+            },
+            {
+              "mes": "dez",
+              "geracao_kwh": 277.2,
+              "consumo_kwh": 250.0,
+              "saldo_kwh": 27.2
+            }
+          ],
+          "meses_com_excedente": [
+            "jan",
+            "mar",
+            "nov",
+            "dez"
+          ],
+          "meses_com_deficit": [
+            "fev",
+            "abr",
+            "mai",
+            "jun",
+            "jul",
+            "ago",
+            "set",
+            "out"
+          ],
+          "maior_geracao_mes": "dez",
+          "maior_geracao_kwh": 277.2,
+          "menor_geracao_mes": "jun",
+          "menor_geracao_kwh": 185.9,
+          "variacao_pct": 49.1,
+          "creditos_kwh_ano": 62.0
+        },
+        "impacto_ambiental": {
+          "co2_evitado_kg_ano": 109.0,
+          "co2_evitado_t_25_anos": 2.6,
+          "energia_limpa_mwh_25_anos": 66.5,
+          "consumo_atendido_por_solar_pct": 94.1,
+          "fator_emissao_t_mwh": 0.0385,
+          "ods": [
+            "ODS 7.1: acesso a energia a preço acessível (economia na conta de luz)",
+            "ODS 7.2: aumento da participação de energia renovável no consumo",
+            "ODS 13.2: redução de emissões de gases de efeito estufa"
+          ]
+        }
+      },
+      "classificacao": "boa",
+      "alertas": [
+        "A Lei 14.300/2022 cobra uma parte crescente do Fio B sobre a energia injetada na rede; a economia já considera isso."
+      ],
+      "recomendacao": "## Veredito  \nA viabilidade da energia solar é **boa** para Curitiba (PR), considerando o potencial solar moderado, o custo de instalação e a economia financeira esperada. A geração varia significativamente entre meses, mas há oportunidades de aproveitar o excesso de energia em meses de alta produção.\n\n## Por que  \nO potencial solar de Curitiba é moderado, com geração média de 4,39 kWh/m²/dia, o que permite um sistema adequado para atender ao consumo de 250 kWh/mês. A economia de energia é real, com 94,1% do consumo atendido pela geração solar, e o retorno do investimento é de 3,8 anos. A geração varia entre 185,9 e 277,2 kWh/mês, o que oferece flexibilidade para ajustes no consumo. Além disso, o impacto ambiental é positivo, reduzindo emissões de CO₂ e contribuindo para a sustentabilidade.\n\n## Ações recomendadas  \n1. **Conferir o telhado**: Verifique se há espaço suficiente para instalar os painéis e se o telhado é adequado para a configuração solicitada.  \n2. **Pedir orçamentos a instaladores**: Compare diferentes empresas para garantir a menor custo de instalação e melhores condições de serviço.  \n3. **Acompanhar as regras da distribuidora**: Confira as normas da empresa de distribuição para evitar multas ou penalidades por irregularidades na conexão.\n\n## Pontos de atenção  \n- A Lei 14.300/2022 aumenta o Fio B, que pode afetar a economia. É importante considerar esse fator na análise financeira.  \n- A geração está abaixo do consumo em alguns meses, o que pode gerar créditos energéticos, mas também demanda planejamento para evitar sobrecarga.  \n- O sistema deve ser dimensionado com segurança, garantindo que a geração nunca ultrapasse o consumo em meses de baixa produtividade.\n\n## Impacto ESG e ODS  \n- Reduz 109 kg de CO₂ por ano e 2,6 toneladas em 25 anos, contribuindo para a mitigação de mudanças climáticas.  \n- Atende 94,1% do consumo com energia renovável, alinhando-se aos objetivos de sustentabilidade (ODS 7).  \n- A matriz elétrica brasileira é já pouco poluente, tornando a energia solar uma opção acessível e socialmente benéfica.",
+      "verificacao": {
+        "numeros_citados": [
+          2.6,
+          3.8,
+          4.39,
+          14.0,
+          25.0,
+          94.1,
+          109.0,
+          185.9,
+          250.0,
+          277.2
+        ],
+        "nao_encontrados": [],
+        "confiavel": true
+      },
+      "premissas": {
+        "custo_kwp": {
+          "valor": 3000.0,
+          "unidade": "R$/kWp",
+          "fonte": "Greener, 1º semestre de 2025: sistema residencial de 4 kWp por cerca de R$ 11.360 (R$ 2,84/Wp), mais a alta de 7% no 1º semestre de 2026 (pv magazine). Arredondado para R$ 3.000/kWp."
+        },
+        "fator_emissao": {
+          "valor": 0.0385,
+          "unidade": "tCO2/MWh",
+          "fonte": "Fator médio anual de emissão do Sistema Interligado Nacional em 2023 (MCTI): 38,5 kg de CO2 por MWh."
+        },
+        "degradacao": {
+          "valor": 0.005,
+          "unidade": "por ano",
+          "fonte": "Garantia de desempenho típica de módulos (0,5% ao ano)."
+        },
+        "vida_util": {
+          "valor": 25,
+          "unidade": "anos",
+          "fonte": "Garantia de desempenho típica de módulos fotovoltaicos."
+        },
+        "modulo": {
+          "valor": 0.55,
+          "unidade": "kWp por módulo",
+          "fonte": "Módulo comercial comum de 550 W, cerca de 2,6 m²."
+        },
+        "fio_b": {
+          "valor": {
+            "parcela_da_tarifa": 0.28,
+            "simultaneidade": 0.3,
+            "ano_instalacao": 2027
+          },
+          "unidade": "fração",
+          "fonte": "Lei 14.300/2022: a energia injetada na rede paga uma parte crescente do Fio B (75% em 2027, 90% em 2028 e 100% depois). Fio B estimado em 28% da tarifa e 30% da geração consumida na hora (valores típicos residenciais)."
+        },
+        "manutencao": {
+          "valor": 0.01,
+          "unidade": "do investimento por ano",
+          "fonte": "Estimativa usual de operação e manutenção (limpeza, inspeção)."
+        },
+        "custo_disponibilidade": {
+          "valor": {
+            "monofasica": 30,
+            "bifasica": 50,
+            "trifasica": 100
+          },
+          "unidade": "kWh/mês",
+          "fonte": "ANEEL (REN 1.000/2021): consumo mínimo cobrado mesmo com geração própria, conforme o tipo de ligação."
+        }
+      },
+      "modelo": {
+        "nome": "Qwen/Qwen3-1.7B",
+        "dispositivo": "mps",
+        "dtype": "float16",
+        "parametros_milhoes": 1720.6
+      },
+      "uso": {
+        "tokens_entrada": 1188,
+        "tokens_saida": 597,
+        "tempo_s": 11.8,
+        "tokens_por_s": 50.6,
+        "em_cache": false
+      }
+    },
+    "destaque": "**Passos escolhidos pelo agente:** potencial_solar, depois comparar_capitais, depois noticias_setor, depois dimensionar_sistema, depois analise_financeira, depois sazonalidade, depois impacto_ambiental, depois finalizar. **Viabilidade:** boa. **Números conferidos:** todos.\n\n**Recomendação escrita pelo modelo:**\n\n## Veredito  \nA viabilidade da energia solar é **boa** para Curitiba (PR), considerando o potencial solar moderado, o custo de instalação e a economia financeira esperada. A geração varia significativamente entre meses, mas há oportunidades de aproveitar o excesso de energia em meses de alta produção.\n\n## Por que  \nO potencial solar de Curitiba é moderado, com geração média de 4,39 kWh/m²/dia, o que permite um sistema adequado para atender ao consumo de 250 kWh/mês. A economia de energia é real, com 94,1% do consumo atendido pela geração solar, e o retorno do investimento é de 3,8 anos. A geração varia entre 185,9 e 277,2 kWh/mês, o que oferece flexibilidade para ajustes no consumo. Além disso, o impacto ambiental é positivo, reduzindo emissões de CO₂ e contribuindo para a sustentabilidade.\n\n## Ações recomendadas  \n1. **Conferir o telhado**: Verifique se há espaço suficiente para instalar os painéis e se o telhado é adequado para a configuração solicitada.  \n2. **Pedir orçamentos a instaladores**: Compare diferentes empresas para garantir a menor custo de instalação e melhores condições de serviço.  \n3. **Acompanhar as regras da distribuidora**: Confira as normas da empresa de distribuição para evitar multas ou penalidades por irregularidades na conexão.\n\n## Pontos de atenção  \n- A Lei 14.300/2022 aumenta o Fio B, que pode afetar a economia. É importante considerar esse fator na análise financeira.  \n- A geração está abaixo do consumo em alguns meses, o que pode gerar créditos energéticos, mas também demanda planejamento para evitar sobrecarga.  \n- O sistema deve ser dimensionado com segurança, garantindo que a geração nunca ultrapasse o consumo em meses de baixa produtividade.\n\n## Impacto ESG e ODS  \n- Reduz 109 kg de CO₂ por ano e 2,6 toneladas em 25 anos, contribuindo para a mitigação de mudanças climáticas.  \n- Atende 94,1% do consumo com energia renovável, alinhando-se aos objetivos de sustentabilidade (ODS 7).  \n- A matriz elétrica brasileira é já pouco poluente, tornando a energia solar uma opção acessível e socialmente benéfica."
+  },
+  {
+    "titulo": "Nova conversa sobre a recomendação",
+    "quando": "2026-11-21T10:20:11",
+    "requisicao": {
+      "metodo": "POST",
+      "url": "http://127.0.0.1:8020/conversas",
+      "params": null,
+      "corpo": {
+        "recomendacao_id": "6f5e4d7ebcac"
+      }
+    },
+    "status": 201,
+    "tempo_total_s": 0.0,
+    "resposta": {
+      "id": "85004508432e",
+      "criada_em": "2026-11-21T10:20:11",
+      "atualizada_em": "2026-11-21T10:20:11",
+      "turnos": [],
+      "memoria": {
+        "fatos": {
+          "cidade": "Curitiba (PR)",
+          "cidade_recomendacao": "Curitiba (PR)",
+          "cidades_citadas": [
+            "Curitiba (PR)"
+          ],
+          "consumo_kwh_mes": 250.0,
+          "tarifa": 0.92,
+          "potencia_kwp": 2.2
+        },
+        "resumo": "",
+        "total_turnos": 0,
+        "turnos_na_janela": 0,
+        "turnos_resumidos": 0,
+        "tamanho_janela": 3,
+        "recomendacao_id": "6f5e4d7ebcac"
+      }
+    }
+  },
+  {
+    "titulo": "Mensagem com memória: \"Quanto o sistema gera no pior mês?\"",
+    "quando": "2026-11-21T10:20:11",
+    "requisicao": {
+      "metodo": "POST",
+      "url": "http://127.0.0.1:8020/conversas/85004508432e/mensagens",
+      "params": null,
+      "corpo": {
+        "pergunta": "Quanto o sistema gera no pior mês?"
+      }
+    },
+    "status": 200,
+    "tempo_total_s": 2.26,
+    "resposta": {
+      "conversa_id": "85004508432e",
+      "pergunta": "Quanto o sistema gera no pior mês?",
+      "pergunta_reescrita": "Quantos kWh o sistema gera no pior mês?",
+      "metodo_reescrita": "modelo",
+      "resposta": "O sistema gera 185,9 kWh no pior mês [2]. O pior mês é junho, com 185,9 kWh [2]. No pior mês, o sistema gera aproximadamente 185,9 kWh [2]. A geração varia 49,1% entre o melhor e o pior mês [2].",
+      "fontes": [
+        {
+          "n": 1,
+          "titulo": "Recomendação do agente consultor",
+          "fonte": "Agente consultor do Solar Viável",
+          "tipo": "recomendacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": false
+        },
+        {
+          "n": 2,
+          "titulo": "Simulação para Curitiba (PR) com 2,20 kWp",
+          "fonte": "Cálculo do Solar Viável (CRESESB)",
+          "tipo": "simulacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": true
+        },
+        {
+          "n": 3,
+          "titulo": "EPE prepara chamada de projetos de usinas reversíveis para futura contratação no Brasil",
+          "fonte": "Canal Solar",
+          "tipo": "noticia",
+          "url": "https://canalsolar.com.br/epe-prepara-chamada-projetos-usinas-reversiveis/",
+          "data": "2026-09-16",
+          "citada": false
+        },
+        {
+          "n": 4,
+          "titulo": "Agentes pedem neutralidade no edital do leilão de baterias e revisão do risco de inadimplência",
+          "fonte": "ABSOLAR",
+          "tipo": "noticia",
+          "url": "https://www.absolar.org.br/home/agentes-pedem-neutralidade-no-edital-do-leilao-de-baterias-e-revisao-do-risco-de-inadimplencia/",
+          "data": "2026-09-03",
+          "citada": false
+        }
+      ],
+      "memoria": {
+        "fatos": {
+          "cidade": "Curitiba (PR)",
+          "cidade_recomendacao": "Curitiba (PR)",
+          "cidades_citadas": [
+            "Curitiba (PR)"
+          ],
+          "consumo_kwh_mes": 250.0,
+          "tarifa": 0.92,
+          "potencia_kwp": 2.2
+        },
+        "resumo": "",
+        "total_turnos": 1,
+        "turnos_na_janela": 1,
+        "turnos_resumidos": 0,
+        "tamanho_janela": 3,
+        "recomendacao_id": "6f5e4d7ebcac"
+      },
+      "resumo_atualizado": false,
+      "modelo": {
+        "nome": "Qwen/Qwen3-1.7B",
+        "dispositivo": "mps",
+        "dtype": "float16",
+        "parametros_milhoes": 1720.6
+      },
+      "uso": {
+        "tokens_entrada": 2741,
+        "tokens_saida": 102,
+        "tempo_s": 2.25,
+        "tokens_por_s": 45.3,
+        "em_cache": false
+      }
+    },
+    "destaque": "**Pergunta entendida como:** Quantos kWh o sistema gera no pior mês? (modelo). **Fatos lembrados:** {\"cidade\": \"Curitiba (PR)\", \"cidade_recomendacao\": \"Curitiba (PR)\", \"cidades_citadas\": [\"Curitiba (PR)\"], \"consumo_kwh_mes\": 250.0, \"tarifa\": 0.92, \"potencia_kwp\": 2.2}.\n\n**Resposta:** O sistema gera 185,9 kWh no pior mês [2]. O pior mês é junho, com 185,9 kWh [2]. No pior mês, o sistema gera aproximadamente 185,9 kWh [2]. A geração varia 49,1% entre o melhor e o pior mês [2]."
+  },
+  {
+    "titulo": "Mensagem com memória: \"E em Fortaleza, como seria?\"",
+    "quando": "2026-11-21T10:20:13",
+    "requisicao": {
+      "metodo": "POST",
+      "url": "http://127.0.0.1:8020/conversas/85004508432e/mensagens",
+      "params": null,
+      "corpo": {
+        "pergunta": "E em Fortaleza, como seria?"
+      }
+    },
+    "status": 200,
+    "tempo_total_s": 2.28,
+    "resposta": {
+      "conversa_id": "85004508432e",
+      "pergunta": "E em Fortaleza, como seria?",
+      "pergunta_reescrita": "E em Fortaleza, quanto o sistema de 2,2 kWp gera por mês?",
+      "metodo_reescrita": "modelo",
+      "resposta": "Em Fortaleza, o sistema de 2,2 kWp gera média de 305,1 kWh por mês [1]. O pior mês é abril, com 258,7 kWh [1]. A geração varia 49,1% entre o melhor e o pior mês [1].",
+      "fontes": [
+        {
+          "n": 1,
+          "titulo": "Simulação para Fortaleza (CE) com 2,20 kWp",
+          "fonte": "Cálculo do Solar Viável (CRESESB)",
+          "tipo": "simulacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": true
+        },
+        {
+          "n": 2,
+          "titulo": "Ranking das capitais por potencial solar",
+          "fonte": "NASA POWER + CRESESB",
+          "tipo": "ranking",
+          "url": "",
+          "data": "2026-10-17",
+          "citada": false
+        },
+        {
+          "n": 3,
+          "titulo": "BESS reduz conta de energia de hortifrúti em Curitiba (PR)",
+          "fonte": "Canal Solar",
+          "tipo": "noticia",
+          "url": "https://canalsolar.com.br/bess-reduz-conta-energia-hortifruti-curitiba/",
+          "data": "2026-09-17",
+          "citada": false
+        },
+        {
+          "n": 4,
+          "titulo": "Recomendação do agente consultor",
+          "fonte": "Agente consultor do Solar Viável",
+          "tipo": "recomendacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": false
+        }
+      ],
+      "memoria": {
+        "fatos": {
+          "cidade": "Fortaleza (CE)",
+          "cidade_recomendacao": "Curitiba (PR)",
+          "cidades_citadas": [
+            "Curitiba (PR)",
+            "Fortaleza (CE)"
+          ],
+          "consumo_kwh_mes": 250.0,
+          "tarifa": 0.92,
+          "potencia_kwp": 2.2
+        },
+        "resumo": "",
+        "total_turnos": 2,
+        "turnos_na_janela": 2,
+        "turnos_resumidos": 0,
+        "tamanho_janela": 3,
+        "recomendacao_id": "6f5e4d7ebcac"
+      },
+      "resumo_atualizado": false,
+      "modelo": {
+        "nome": "Qwen/Qwen3-1.7B",
+        "dispositivo": "mps",
+        "dtype": "float16",
+        "parametros_milhoes": 1720.6
+      },
+      "uso": {
+        "tokens_entrada": 3300,
+        "tokens_saida": 96,
+        "tempo_s": 2.28,
+        "tokens_por_s": 42.1,
+        "em_cache": false
+      }
+    },
+    "destaque": "**Pergunta entendida como:** E em Fortaleza, quanto o sistema de 2,2 kWp gera por mês? (modelo). **Fatos lembrados:** {\"cidade\": \"Fortaleza (CE)\", \"cidade_recomendacao\": \"Curitiba (PR)\", \"cidades_citadas\": [\"Curitiba (PR)\", \"Fortaleza (CE)\"], \"consumo_kwh_mes\": 250.0, \"tarifa\": 0.92, \"potencia_kwp\": 2.2}.\n\n**Resposta:** Em Fortaleza, o sistema de 2,2 kWp gera média de 305,1 kWh por mês [1]. O pior mês é abril, com 258,7 kWh [1]. A geração varia 49,1% entre o melhor e o pior mês [1]."
+  },
+  {
+    "titulo": "Mensagem com memória: \"Qual das duas cidades tem mais sol?\"",
+    "quando": "2026-11-21T10:20:15",
+    "requisicao": {
+      "metodo": "POST",
+      "url": "http://127.0.0.1:8020/conversas/85004508432e/mensagens",
+      "params": null,
+      "corpo": {
+        "pergunta": "Qual das duas cidades tem mais sol?"
+      }
+    },
+    "status": 200,
+    "tempo_total_s": 2.02,
+    "resposta": {
+      "conversa_id": "85004508432e",
+      "pergunta": "Qual das duas cidades tem mais sol?",
+      "pergunta_reescrita": "Qual cidade tem mais sol entre Fortaleza e Curitiba?",
+      "metodo_reescrita": "modelo",
+      "resposta": "Fortaleza tem mais sol que Curitiba [2]. A irradiação média em Fortaleza é de 5,70 kWh/m²/dia, enquanto em Curitiba é de 4,39 kWh/m²/dia [2]. Fortaleza está no 1º lugar entre as cidades no índice de irradiação [2].",
+      "fontes": [
+        {
+          "n": 1,
+          "titulo": "Recomendação do agente consultor",
+          "fonte": "Agente consultor do Solar Viável",
+          "tipo": "recomendacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": false
+        },
+        {
+          "n": 2,
+          "titulo": "Comparação entre as cidades da conversa",
+          "fonte": "Cálculo do Solar Viável (CRESESB)",
+          "tipo": "simulacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": true
+        },
+        {
+          "n": 3,
+          "titulo": "Simulação para Curitiba (PR) com 2,20 kWp",
+          "fonte": "Cálculo do Solar Viável (CRESESB)",
+          "tipo": "simulacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": false
+        },
+        {
+          "n": 4,
+          "titulo": "Simulação para Fortaleza (CE) com 2,20 kWp",
+          "fonte": "Cálculo do Solar Viável (CRESESB)",
+          "tipo": "simulacao",
+          "url": "",
+          "data": "2026-11-21",
+          "citada": false
+        }
+      ],
+      "memoria": {
+        "fatos": {
+          "cidade": "Fortaleza (CE)",
+          "cidade_recomendacao": "Curitiba (PR)",
+          "cidades_citadas": [
+            "Curitiba (PR)",
+            "Fortaleza (CE)"
+          ],
+          "consumo_kwh_mes": 250.0,
+          "tarifa": 0.92,
+          "potencia_kwp": 2.2
+        },
+        "resumo": "",
+        "total_turnos": 3,
+        "turnos_na_janela": 3,
+        "turnos_resumidos": 0,
+        "tamanho_janela": 3,
+        "recomendacao_id": "6f5e4d7ebcac"
+      },
+      "resumo_atualizado": false,
+      "modelo": {
+        "nome": "Qwen/Qwen3-1.7B",
+        "dispositivo": "mps",
+        "dtype": "float16",
+        "parametros_milhoes": 1720.6
+      },
+      "uso": {
+        "tokens_entrada": 2726,
+        "tokens_saida": 90,
+        "tempo_s": 2.01,
+        "tokens_por_s": 44.7,
+        "em_cache": false
+      }
+    },
+    "destaque": "**Pergunta entendida como:** Qual cidade tem mais sol entre Fortaleza e Curitiba? (modelo). **Fatos lembrados:** {\"cidade\": \"Fortaleza (CE)\", \"cidade_recomendacao\": \"Curitiba (PR)\", \"cidades_citadas\": [\"Curitiba (PR)\", \"Fortaleza (CE)\"], \"consumo_kwh_mes\": 250.0, \"tarifa\": 0.92, \"potencia_kwp\": 2.2}.\n\n**Resposta:** Fortaleza tem mais sol que Curitiba [2]. A irradiação média em Fortaleza é de 5,70 kWh/m²/dia, enquanto em Curitiba é de 4,39 kWh/m²/dia [2]. Fortaleza está no 1º lugar entre as cidades no índice de irradiação [2]."
+  },
+  {
+    "titulo": "Histórico e memória da conversa",
+    "quando": "2026-11-21T10:20:17",
+    "requisicao": {
+      "metodo": "GET",
+      "url": "http://127.0.0.1:8020/conversas/85004508432e",
+      "params": null,
+      "corpo": null
+    },
+    "status": 200,
+    "tempo_total_s": 0.0,
+    "resposta": {
+      "id": "85004508432e",
+      "criada_em": "2026-11-21T10:20:11",
+      "atualizada_em": "2026-11-21T10:20:17",
+      "turnos": [
+        {
+          "pergunta": "Quanto o sistema gera no pior mês?",
+          "resposta": "O sistema gera 185,9 kWh no pior mês [2]. O pior mês é junho, com 185,9 kWh [2]. No pior mês, o sistema gera aproximadamente 185,9 kWh [2]. A geração varia 49,1% entre o melhor e o pior mês [2].",
+          "pergunta_reescrita": "Quantos kWh o sistema gera no pior mês?",
+          "fontes": [
+            {
+              "n": 1,
+              "titulo": "Recomendação do agente consultor",
+              "fonte": "Agente consultor do Solar Viável",
+              "tipo": "recomendacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": false
+            },
+            {
+              "n": 2,
+              "titulo": "Simulação para Curitiba (PR) com 2,20 kWp",
+              "fonte": "Cálculo do Solar Viável (CRESESB)",
+              "tipo": "simulacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": true
+            },
+            {
+              "n": 3,
+              "titulo": "EPE prepara chamada de projetos de usinas reversíveis para futura contratação no Brasil",
+              "fonte": "Canal Solar",
+              "tipo": "noticia",
+              "url": "https://canalsolar.com.br/epe-prepara-chamada-projetos-usinas-reversiveis/",
+              "data": "2026-09-16",
+              "citada": false
+            },
+            {
+              "n": 4,
+              "titulo": "Agentes pedem neutralidade no edital do leilão de baterias e revisão do risco de inadimplência",
+              "fonte": "ABSOLAR",
+              "tipo": "noticia",
+              "url": "https://www.absolar.org.br/home/agentes-pedem-neutralidade-no-edital-do-leilao-de-baterias-e-revisao-do-risco-de-inadimplencia/",
+              "data": "2026-09-03",
+              "citada": false
+            }
+          ],
+          "criado_em": "2026-11-21T10:20:13"
+        },
+        {
+          "pergunta": "E em Fortaleza, como seria?",
+          "resposta": "Em Fortaleza, o sistema de 2,2 kWp gera média de 305,1 kWh por mês [1]. O pior mês é abril, com 258,7 kWh [1]. A geração varia 49,1% entre o melhor e o pior mês [1].",
+          "pergunta_reescrita": "E em Fortaleza, quanto o sistema de 2,2 kWp gera por mês?",
+          "fontes": [
+            {
+              "n": 1,
+              "titulo": "Simulação para Fortaleza (CE) com 2,20 kWp",
+              "fonte": "Cálculo do Solar Viável (CRESESB)",
+              "tipo": "simulacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": true
+            },
+            {
+              "n": 2,
+              "titulo": "Ranking das capitais por potencial solar",
+              "fonte": "NASA POWER + CRESESB",
+              "tipo": "ranking",
+              "url": "",
+              "data": "2026-10-17",
+              "citada": false
+            },
+            {
+              "n": 3,
+              "titulo": "BESS reduz conta de energia de hortifrúti em Curitiba (PR)",
+              "fonte": "Canal Solar",
+              "tipo": "noticia",
+              "url": "https://canalsolar.com.br/bess-reduz-conta-energia-hortifruti-curitiba/",
+              "data": "2026-09-17",
+              "citada": false
+            },
+            {
+              "n": 4,
+              "titulo": "Recomendação do agente consultor",
+              "fonte": "Agente consultor do Solar Viável",
+              "tipo": "recomendacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": false
+            }
+          ],
+          "criado_em": "2026-11-21T10:20:15"
+        },
+        {
+          "pergunta": "Qual das duas cidades tem mais sol?",
+          "resposta": "Fortaleza tem mais sol que Curitiba [2]. A irradiação média em Fortaleza é de 5,70 kWh/m²/dia, enquanto em Curitiba é de 4,39 kWh/m²/dia [2]. Fortaleza está no 1º lugar entre as cidades no índice de irradiação [2].",
+          "pergunta_reescrita": "Qual cidade tem mais sol entre Fortaleza e Curitiba?",
+          "fontes": [
+            {
+              "n": 1,
+              "titulo": "Recomendação do agente consultor",
+              "fonte": "Agente consultor do Solar Viável",
+              "tipo": "recomendacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": false
+            },
+            {
+              "n": 2,
+              "titulo": "Comparação entre as cidades da conversa",
+              "fonte": "Cálculo do Solar Viável (CRESESB)",
+              "tipo": "simulacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": true
+            },
+            {
+              "n": 3,
+              "titulo": "Simulação para Curitiba (PR) com 2,20 kWp",
+              "fonte": "Cálculo do Solar Viável (CRESESB)",
+              "tipo": "simulacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": false
+            },
+            {
+              "n": 4,
+              "titulo": "Simulação para Fortaleza (CE) com 2,20 kWp",
+              "fonte": "Cálculo do Solar Viável (CRESESB)",
+              "tipo": "simulacao",
+              "url": "",
+              "data": "2026-11-21",
+              "citada": false
+            }
+          ],
+          "criado_em": "2026-11-21T10:20:17"
+        }
+      ],
+      "memoria": {
+        "fatos": {
+          "cidade": "Fortaleza (CE)",
+          "cidade_recomendacao": "Curitiba (PR)",
+          "cidades_citadas": [
+            "Curitiba (PR)",
+            "Fortaleza (CE)"
+          ],
+          "consumo_kwh_mes": 250.0,
+          "tarifa": 0.92,
+          "potencia_kwp": 2.2
+        },
+        "resumo": "",
+        "total_turnos": 3,
+        "turnos_na_janela": 3,
+        "turnos_resumidos": 0,
+        "tamanho_janela": 3,
+        "recomendacao_id": "6f5e4d7ebcac"
+      }
+    }
+  },
+  {
+    "titulo": "Painel (ciclo de ciência de dados)",
+    "quando": "2026-11-21T10:20:17",
+    "requisicao": {
+      "metodo": "GET",
+      "url": "http://127.0.0.1:8020/painel",
+      "params": {
+        "consumo_kwh_mes": 300,
+        "tarifa": 0.95
+      },
+      "corpo": null
+    },
+    "status": 200,
+    "tempo_total_s": 0.03,
+    "resposta": {
+      "ciclo": [
+        {
+          "etapa": "Coleta",
+          "descricao": "API REST da NASA POWER, Selenium no SunData (CRESESB) e Beautiful Soup na ABSOLAR e no Canal Solar",
+          "indicadores": {
+            "fontes": 4,
+            "dias_de_clima": 366,
+            "registros_nasa": 3660,
+            "capitais": 10,
+            "series_cresesb": 40,
+            "noticias": 54
+          }
+        },
+        {
+          "etapa": "Processamento",
+          "descricao": "limpeza (-999 vira ausente), padronização, trechos de texto, fichas das capitais e ranking",
+          "indicadores": {
+            "ausentes_irradiacao_pct": 1.9,
+            "documentos_corpus": 164,
+            "palavras_corpus": 32192
+          }
+        },
+        {
+          "etapa": "Análise",
+          "descricao": "geração mês a mês, dimensionamento, payback com Fio B, CO2 evitado e benchmark das capitais",
+          "indicadores": {
+            "capitais_comparadas": 10,
+            "ferramentas_do_agente": 7
+          }
+        },
+        {
+          "etapa": "IA",
+          "descricao": "LLM local: resumo e sentimento das notícias, agente que decide as análises e chat com memória",
+          "indicadores": {
+            "noticias_classificadas": 54,
+            "modelo": "Qwen/Qwen3-1.7B",
+            "estado_modelo": "pronto"
+          }
+        },
+        {
+          "etapa": "Apresentação",
+          "descricao": "painel Streamlit consumindo a API FastAPI, com recomendações, gráficos e conversa",
+          "indicadores": {
+            "rotas_api": 29
+          }
+        }
+      ],
+      "capitais": [
+        {
+          "cidade": "Fortaleza (CE)",
+          "irradiacao_media": 5.7,
+          "potencia_kwp": 1.8,
+          "investimento_rs": 5400.0,
+          "payback_anos": 2.3,
+          "economia_25_anos_rs": 52749.11,
+          "co2_evitado_kg_ano": 115.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Brasília (DF)",
+          "irradiacao_media": 5.47,
+          "potencia_kwp": 1.88,
+          "investimento_rs": 5640.0,
+          "payback_anos": 2.4,
+          "economia_25_anos_rs": 52813.08,
+          "co2_evitado_kg_ano": 116.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Recife (PE)",
+          "irradiacao_media": 5.48,
+          "potencia_kwp": 1.88,
+          "investimento_rs": 5640.0,
+          "payback_anos": 2.4,
+          "economia_25_anos_rs": 52847.57,
+          "co2_evitado_kg_ano": 116.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Belo Horizonte (MG)",
+          "irradiacao_media": 5.36,
+          "potencia_kwp": 1.92,
+          "investimento_rs": 5760.0,
+          "payback_anos": 2.5,
+          "economia_25_anos_rs": 52783.08,
+          "co2_evitado_kg_ano": 116.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Salvador (BA)",
+          "irradiacao_media": 5.41,
+          "potencia_kwp": 1.9,
+          "investimento_rs": 5700.0,
+          "payback_anos": 2.5,
+          "economia_25_anos_rs": 52746.34,
+          "co2_evitado_kg_ano": 115.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Rio de Janeiro (RJ)",
+          "irradiacao_media": 4.93,
+          "potencia_kwp": 2.08,
+          "investimento_rs": 6240.0,
+          "payback_anos": 2.7,
+          "economia_25_anos_rs": 52484.94,
+          "co2_evitado_kg_ano": 115.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Porto Alegre (RS)",
+          "irradiacao_media": 4.67,
+          "potencia_kwp": 2.2,
+          "investimento_rs": 6600.0,
+          "payback_anos": 2.9,
+          "economia_25_anos_rs": 52485.22,
+          "co2_evitado_kg_ano": 115.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "São Paulo (SP)",
+          "irradiacao_media": 4.64,
+          "potencia_kwp": 2.21,
+          "investimento_rs": 6630.0,
+          "payback_anos": 2.9,
+          "economia_25_anos_rs": 52405.5,
+          "co2_evitado_kg_ano": 115.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Curitiba (PR)",
+          "irradiacao_media": 4.39,
+          "potencia_kwp": 2.34,
+          "investimento_rs": 7020.0,
+          "payback_anos": 3.1,
+          "economia_25_anos_rs": 52433.58,
+          "co2_evitado_kg_ano": 116.0,
+          "classificacao": "excelente"
+        },
+        {
+          "cidade": "Manaus (AM)",
+          "irradiacao_media": 4.33,
+          "potencia_kwp": 2.37,
+          "investimento_rs": 7110.0,
+          "payback_anos": 3.1,
+          "economia_25_anos_rs": 52357.72,
+          "co2_evitado_kg_ano": 115.0,
+          "classificacao": "excelente"
+        }
+      ],
+      "perfil": {
+        "consumo_kwh_mes": 300.0,
+        "tarifa": 0.95,
+        "custo_kwp": 3000.0
+      },
+      "sentimento_noticias": {
+        "positivo": 28,
+        "neutro": 25,
+        "negativo": 1
+      },
+      "sentimento_por_fonte": [
+        {
+          "fonte": "ABSOLAR",
+          "sentimento": "neutro",
+          "noticias": 9
+        },
+        {
+          "fonte": "ABSOLAR",
+          "sentimento": "positivo",
+          "noticias": 15
+        },
+        {
+          "fonte": "Canal Solar",
+          "sentimento": "negativo",
+          "noticias": 1
+        },
+        {
+          "fonte": "Canal Solar",
+          "sentimento": "neutro",
+          "noticias": 16
+        },
+        {
+          "fonte": "Canal Solar",
+          "sentimento": "positivo",
+          "noticias": 13
+        }
+      ],
+      "sentimento_por_mes": [
+        {
+          "mes": "2026-06",
+          "sentimento": "positivo",
+          "noticias": 1
+        },
+        {
+          "mes": "2026-07",
+          "sentimento": "neutro",
+          "noticias": 2
+        },
+        {
+          "mes": "2026-07",
+          "sentimento": "positivo",
+          "noticias": 3
+        },
+        {
+          "mes": "2026-08",
+          "sentimento": "positivo",
+          "noticias": 1
+        },
+        {
+          "mes": "2026-09",
+          "sentimento": "neutro",
+          "noticias": 9
+        },
+        {
+          "mes": "2026-09",
+          "sentimento": "positivo",
+          "noticias": 16
+        },
+        {
+          "mes": "2026-10",
+          "sentimento": "negativo",
+          "noticias": 1
+        },
+        {
+          "mes": "2026-10",
+          "sentimento": "neutro",
+          "noticias": 14
+        },
+        {
+          "mes": "2026-10",
+          "sentimento": "positivo",
+          "noticias": 7
+        }
+      ],
+      "noticias_processadas": 54,
+      "modelo_noticias": "Qwen/Qwen3-1.7B",
+      "premissas": {
+        "custo_kwp": {
+          "valor": 3000.0,
+          "unidade": "R$/kWp",
+          "fonte": "Greener, 1º semestre de 2025: sistema residencial de 4 kWp por cerca de R$ 11.360 (R$ 2,84/Wp), mais a alta de 7% no 1º semestre de 2026 (pv magazine). Arredondado para R$ 3.000/kWp."
+        },
+        "fator_emissao": {
+          "valor": 0.0385,
+          "unidade": "tCO2/MWh",
+          "fonte": "Fator médio anual de emissão do Sistema Interligado Nacional em 2023 (MCTI): 38,5 kg de CO2 por MWh."
+        },
+        "degradacao": {
+          "valor": 0.005,
+          "unidade": "por ano",
+          "fonte": "Garantia de desempenho típica de módulos (0,5% ao ano)."
+        },
+        "vida_util": {
+          "valor": 25,
+          "unidade": "anos",
+          "fonte": "Garantia de desempenho típica de módulos fotovoltaicos."
+        },
+        "modulo": {
+          "valor": 0.55,
+          "unidade": "kWp por módulo",
+          "fonte": "Módulo comercial comum de 550 W, cerca de 2,6 m²."
+        },
+        "fio_b": {
+          "valor": {
+            "parcela_da_tarifa": 0.28,
+            "simultaneidade": 0.3,
+            "ano_instalacao": 2027
+          },
+          "unidade": "fração",
+          "fonte": "Lei 14.300/2022: a energia injetada na rede paga uma parte crescente do Fio B (75% em 2027, 90% em 2028 e 100% depois). Fio B estimado em 28% da tarifa e 30% da geração consumida na hora (valores típicos residenciais)."
+        },
+        "manutencao": {
+          "valor": 0.01,
+          "unidade": "do investimento por ano",
+          "fonte": "Estimativa usual de operação e manutenção (limpeza, inspeção)."
+        },
+        "custo_disponibilidade": {
+          "valor": {
+            "monofasica": 30,
+            "bifasica": 50,
+            "trifasica": 100
+          },
+          "unidade": "kWh/mês",
+          "fonte": "ANEEL (REN 1.000/2021): consumo mínimo cobrado mesmo com geração própria, conforme o tipo de ligação."
+        }
+      }
+    }
+  }
+]
