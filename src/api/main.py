@@ -753,7 +753,10 @@ def enviar_mensagem(id_: str, pedido: schemas.PedidoMensagem):
     conversa = repo.obter(id_)
     llm = servico_llm()
     llm.info_modelo()
-    saida = memoria.conversar(llm, _corpus(), conversa, pedido.pergunta, pedido.k)
+    saida = memoria.conversar(
+        llm, _corpus(), conversa, pedido.pergunta, pedido.k,
+        simular=lambda cidades, potencia: viabilidade.fichas_simulacao(_sundata(), cidades, potencia),
+    )
     repo.atualizar(conversa)
     return {
         **saida,

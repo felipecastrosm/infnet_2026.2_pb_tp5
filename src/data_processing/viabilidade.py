@@ -379,3 +379,52 @@ def noticias_setor(noticias_ia: pd.DataFrame, temas: Optional[list[str]] = None,
             for r in destaques.itertuples()
         ],
     }
+
+
+# ---------------------------------------------------------------------------
+# Contexto calculado para o chat com memória
+# ---------------------------------------------------------------------------
+def _br(v: float, casas: int = 2) -> str:
+    return f"{v:,.{casas}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def fichas_simulacao(sundata: pd.DataFrame, cidades: list[str], potencia_kwp: Optional[float] = None, desempenho: float = 0.80) -> list[dict]:
+    """Documentos calculados na hora para o chat: a geração da potência lembrada em cada cidade
+    citada e, com duas ou mais cidades, a comparação já feita (modelos pequenos erram ao comparar
+    números soltos; aqui a conclusão vem pronta dos dados)."""
+    potencia = potencia_kwp or 5.0
+    validas = [c for c in dict.fromkeys(cidades) if c in capitais(sundata)]
+    ranking = sundata[sundata["plano"] == "Maior média anual"].sort_values("media_anual", ascending=False)["cidade"].tolist()
+    docs = []
+    for c in validas:
+        r = _ref(sundata, c)
+        g = climate.geracao_mensal([r[m] for m in climate.MESES], potencia, desempenho, 0)
+        pior, melhor = g.loc[g["geracao_kwh"].idxmin()], g.loc[g["geracao_kwh"].idxmax()]
+        docs.append(
+            {
+                "cidade": c,
+                "titulo": f"Simulação para {c} com {_br(potencia, 2)} kWp",
+                "texto": f"Simulação calculada pelo Solar Viável para {c}, com um sistema de {_br(potencia, 2)} kWp e "
+                f"painéis inclinados (CRESESB). Irradiação média de {_br(float(r['media_anual']))} kWh/m²/dia, "
+                f"{ranking.index(c) + 1}º lugar entre {len(ranking)} capitais. Geração média de "
+                f"{_br(float(g['geracao_kwh'].mean()), 1)} kWh por mês e {_br(float(g['geracao_kwh'].sum()), 0)} kWh por ano. "
+                f"Pior mês: {pior['mes']}, com {_br(float(pior['geracao_kwh']), 1)} kWh. Melhor mês: {melhor['mes']}, "
+                f"com {_br(float(melhor['geracao_kwh']), 1)} kWh.",
+            }
+        )
+    if len(validas) >= 2:
+        ordem = sorted(validas, key=lambda c: -float(_ref(sundata, c)["media_anual"]))
+        valores = {c: float(_ref(sundata, c)["media_anual"]) for c in ordem}
+        mais, menos = ordem[0], ordem[-1]
+        docs.insert(
+            0,
+            {
+                "cidade": "",
+                "titulo": "Comparação entre as cidades da conversa",
+                "texto": "Comparação de sol calculada pelo Solar Viável (CRESESB, painel inclinado), da maior para a menor "
+                "irradiação: " + "; ".join(f"{c}: {_br(v)} kWh/m²/dia" for c, v in valores.items())
+                + f". Quem tem mais sol é {mais}, com {_br((valores[mais] / valores[menos] - 1) * 100, 0)}% a mais de "
+                f"irradiação que {menos}.",
+            },
+        )
+    return docs

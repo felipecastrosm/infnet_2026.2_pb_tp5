@@ -198,7 +198,9 @@ def test_conversa_entende_pergunta_de_acompanhamento(llm):
     corpo = schemas.RespostaMensagem.model_validate(r2.json())
     assert corpo.metodo_reescrita == "modelo"
     assert corpo.pergunta_reescrita == "Quanto um sistema de 5 kWp gera por mês em Manaus?"
-    assert corpo.fontes[0].titulo == "Ficha de potencial solar: Manaus (AM)"  # a busca usou a pergunta reescrita
+    # a busca usou a pergunta reescrita, e a memória (5 kWp) gerou uma simulação para Manaus no lugar da ficha genérica
+    assert corpo.fontes[0].titulo == "Simulação para Manaus (AM) com 5,00 kWp" and corpo.fontes[0].tipo == "simulacao"
+    assert not any(f.titulo == "Ficha de potencial solar: Manaus (AM)" for f in corpo.fontes)
     assert corpo.memoria.fatos["cidade"] == "Manaus (AM)" and corpo.memoria.fatos["potencia_kwp"] == 5.0
     assert corpo.memoria.fatos["cidades_citadas"] == ["Curitiba (PR)", "Manaus (AM)"]
     # a troca anterior vai na íntegra para o modelo (janela) e os fatos entram no prompt de sistema
@@ -270,7 +272,20 @@ def test_conversa_sobre_a_recomendacao_do_agente(llm):
     assert conversa["memoria"]["fatos"]["cidade"] == "Recife (PE)"
     r = client.post(f"/conversas/{conversa['id']}/mensagens", json={"pergunta": "Por que o payback é esse?"}).json()
     assert r["fontes"][0]["tipo"] == "recomendacao"
+    # pergunta sobre outra cidade: a ficha dela vem antes da recomendação (que é de Recife)
+    backend.resposta = resposta_por_tarefa(reescrita="Quanto um sistema de 2,75 kWp gera por mês em Fortaleza?")
+    r = client.post(f"/conversas/{conversa['id']}/mensagens", json={"pergunta": "E em Fortaleza?"}).json()
+    assert r["fontes"][0]["titulo"].startswith("Simulação para Fortaleza (CE)") and r["fontes"][-1]["tipo"] == "recomendacao"
+    assert r["memoria"]["fatos"]["cidades_citadas"] == ["Recife (PE)", "Fortaleza (CE)"]
     assert client.post("/conversas", json={"recomendacao_id": "naoexiste"}).status_code == 404
+
+
+def test_comparacao_calculada_entre_as_cidades_da_conversa():
+    docs = v.fichas_simulacao(SUNDATA, ["Curitiba (PR)", "Fortaleza (CE)"], 2.2)
+    assert docs[0]["titulo"] == "Comparação entre as cidades da conversa"
+    assert "Quem tem mais sol é Fortaleza (CE)" in docs[0]["texto"]
+    assert docs[1]["titulo"] == "Simulação para Curitiba (PR) com 2,20 kWp" and "Pior mês: jun" in docs[1]["texto"]
+    assert v.fichas_simulacao(SUNDATA, ["Gotham (XX)"]) == []
 
 
 def test_mensagem_valida_entrada(llm):

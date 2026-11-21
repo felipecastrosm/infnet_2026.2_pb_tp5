@@ -131,6 +131,8 @@ class RepositorioConversas:
             dim = recomendacao["resultados"].get("dimensionar_sistema", {})
             c.fatos = {
                 "cidade": p["cidade"],
+                "cidade_recomendacao": p["cidade"],
+                "cidades_citadas": [p["cidade"]],
                 "consumo_kwh_mes": p["consumo_kwh_mes"],
                 "tarifa": p["tarifa"],
                 "potencia_kwp": dim.get("potencia_kwp", p.get("potencia_kwp")),
@@ -224,6 +226,8 @@ def descrever_fatos(fatos: dict) -> str:
     partes = []
     if "cidade" in fatos:
         partes.append(f"cidade em foco: {fatos['cidade']}")
+    if fatos.get("cidade_recomendacao") and fatos.get("cidade_recomendacao") != fatos.get("cidade"):
+        partes.append(f"a recomendação do agente é para {fatos['cidade_recomendacao']}")
     if len(fatos.get("cidades_citadas", [])) > 1:
         partes.append(f"cidades já citadas: {', '.join(fatos['cidades_citadas'])}")
     if fatos.get("potencia_kwp"):
@@ -351,8 +355,30 @@ SISTEMA_CHAT = tarefas.SISTEMA_QA + (
 )
 
 
-def _contexto_conversa(corpus: pd.DataFrame, conversa: Conversa, pergunta_busca: str, k: int) -> pd.DataFrame:
+def _docs_calculados(simular, corpus: pd.DataFrame, conversa: Conversa, pergunta_busca: str) -> pd.DataFrame:
+    """Simulações feitas na hora com os fatos lembrados (cidade, potência), via `simular`."""
+    if simular is None:
+        return pd.DataFrame()
+    cidades = llm_prep.cidades_citadas(corpus, pergunta_busca) or ([conversa.fatos["cidade"]] if "cidade" in conversa.fatos else [])
+    if not cidades:
+        return pd.DataFrame()
+    docs = simular(cidades, conversa.fatos.get("potencia_kwp"))
+    return pd.DataFrame(
+        [
+            {"id": f"sim-{i}", "tipo": "simulacao", "fonte": "Cálculo do Solar Viável (CRESESB)", "url": "",
+             "data": datetime.now().strftime("%Y-%m-%d"), "n_palavras": len(d["texto"].split()), "pontuacao": 1.0, **d}
+            for i, d in enumerate(docs)
+        ]
+    )
+
+
+def _contexto_conversa(corpus: pd.DataFrame, conversa: Conversa, pergunta_busca: str, k: int, simular=None) -> pd.DataFrame:
+    calculados = _docs_calculados(simular, corpus, conversa, pergunta_busca)
     trechos = llm_prep.buscar_contexto(corpus, pergunta_busca, k)
+    if len(calculados):
+        # a simulação substitui a ficha genérica da mesma cidade (calculada para 5 kWp)
+        trechos = trechos[~((trechos["tipo"] == "ficha_local") & trechos["cidade"].isin(calculados["cidade"]))]
+        trechos = pd.concat([calculados, trechos], ignore_index=True).head(k + 1)
     if conversa.ficha_recomendacao:
         rec = pd.DataFrame(
             [
@@ -370,7 +396,13 @@ def _contexto_conversa(corpus: pd.DataFrame, conversa: Conversa, pergunta_busca:
                 }
             ]
         )
-        trechos = pd.concat([rec, trechos.head(max(k - 1, 1))], ignore_index=True)
+        # a recomendação vem primeiro, a não ser que a pergunta seja sobre outra cidade
+        # (ex.: "e em Fortaleza?" numa conversa sobre Curitiba): aí a ficha da cidade nova vem antes
+        outras = llm_prep.cidades_citadas(corpus, pergunta_busca)
+        if outras and conversa.fatos.get("cidade_recomendacao") not in outras:
+            trechos = pd.concat([trechos.head(max(k - 1, 1)), rec], ignore_index=True)
+        else:
+            trechos = pd.concat([rec, trechos.head(max(k - 1, 1))], ignore_index=True)
     return trechos
 
 
@@ -400,7 +432,9 @@ def _resumir_conversa(servico: ServicoLLM, conversa: Conversa) -> list:
     return [g]
 
 
-def conversar(servico: ServicoLLM, corpus: pd.DataFrame, conversa: Conversa, pergunta: str, k: int = 4) -> dict:
+def conversar(servico: ServicoLLM, corpus: pd.DataFrame, conversa: Conversa, pergunta: str, k: int = 4, simular=None) -> dict:
+    """Responde usando a memória. `simular(cidades, potencia_kwp)` (opcional) devolve documentos
+    calculados na hora para as cidades da pergunta (ver viabilidade.fichas_simulacao)."""
     pergunta = tarefas.normalizar_espacos(pergunta)
     servico.exigir_tamanho(pergunta, "A pergunta")
     inicio = time.perf_counter()
@@ -411,7 +445,7 @@ def conversar(servico: ServicoLLM, corpus: pd.DataFrame, conversa: Conversa, per
     citadas += llm_prep.cidades_citadas(corpus, pergunta)
     if citadas:
         conversa.fatos["cidades_citadas"] = citadas[-4:]
-    trechos = _contexto_conversa(corpus, conversa, reescrita, k)
+    trechos = _contexto_conversa(corpus, conversa, reescrita, k, simular)
     fontes = [
         {"n": i, "titulo": r.titulo, "fonte": r.fonte, "tipo": r.tipo, "url": r.url, "data": r.data, "citada": False}
         for i, r in enumerate(trechos.itertuples(), start=1)
