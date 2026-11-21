@@ -1,0 +1,972 @@
+{
+  "gerado_em": "2026-11-16 14:11",
+  "modelos": [
+    {
+      "modelo": "Qwen/Qwen2.5-0.5B-Instruct",
+      "parametros_milhoes": 494.0,
+      "dispositivo": "mps",
+      "dtype": "float16",
+      "carga_s": 2.2,
+      "memoria_gb": 0.94,
+      "sentimento": {
+        "acuracia": 0.559,
+        "f1_macro": 0.524,
+        "tempo_medio_s": 0.32,
+        "erros": [
+          {
+            "titulo": "ABSOLAR: Custo de energia solar no Brasil só perderá para China em 2035, diz Irena",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "China propõe controlar exportações de 40 tecnologias de IA, energia solar e biofarmacêuticos",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "WEG será parceira da GreenYellow em projeto de geração solar para 54 lojas do Carrefour Brasil",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Brasol monitora mais de 150 usinas solares contra incêndios",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Nova regra na China: painéis solares deverão ter eficiência mínima de 23,2% e pelo menos 630W",
+            "esperado": "neutro",
+            "previsto": "negativo"
+          },
+          {
+            "titulo": "Usina solar de 142 MW entra em operação em Minas Gerais",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Energia volta a pressionar inflação em diferentes economias do mundo",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Cemig fornecerá energia renovável ao Exército Brasileiro em dez estados",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Seguro para usinas solares exige atenção aos riscos e aos limites de cobertura",
+            "esperado": "neutro",
+            "previsto": "negativo"
+          },
+          {
+            "titulo": "Entidades e frentes parlamentares pedem a Lula regulamentação do Redata com gás natural",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "ANEEL autoriza operação de usina solar da Statkraft com projeto de BESS colocalizado",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Hidrelétricas de pequeno porte podem movimentar R$ 169 bilhões no Brasil",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "ANEEL aprova reajuste nas tarifas da Equatorial Pará; veja os índices por classe",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Curtailment já soma 73,4 milhões de MWh no Brasil desde 2021",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Projeto quer impedir novas cobranças sobre consumidores com energia solar",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          }
+        ]
+      },
+      "resumo": {
+        "palavras_media": 41.6,
+        "no_limite": 1.0,
+        "em_portugues": 1.0,
+        "numeros_fieis": 0.986,
+        "tempo_medio_s": 0.57,
+        "tokens_por_s": 153.3
+      },
+      "qa": {
+        "acerto": 1.0,
+        "acerto_no_escopo": 1.0,
+        "recusa_correta": 1.0,
+        "citou_fonte": 0.0,
+        "em_portugues": 0.917,
+        "tempo_medio_s": 0.25,
+        "respostas": [
+          {
+            "pergunta": "Qual capital tem a maior irradiação solar?",
+            "acerto": true,
+            "resposta": "Recife (PE) tem a maior irradiação solar média de 6,06 kWh/m²/dia, seguida por Fortaleza (CE) com 5,83 kWh/m²/dia."
+          },
+          {
+            "pergunta": "Qual capital tem a menor irradiação solar?",
+            "acerto": true,
+            "resposta": "Curitiba (PR)"
+          },
+          {
+            "pergunta": "Quanto um sistema de 5 kWp gera por mês em Curitiba?",
+            "acerto": true,
+            "resposta": "Um sistema de 5 kWp gera aproximadamente 534 kWh por mês em Curitiba."
+          },
+          {
+            "pergunta": "Qual a irradiação solar média de Fortaleza?",
+            "acerto": true,
+            "resposta": "Air de Fortaleza mede 5,83 kWh/m² por dia."
+          },
+          {
+            "pergunta": "O que é o leilão de baterias?",
+            "acerto": true,
+            "resposta": "O leilão de baterias é um processo de seleção de equipamentos para a produção de energia solar fotovoltaica, onde os interessados podem concorrer para obter a venda de baterias para uso no mercado."
+          },
+          {
+            "pergunta": "Quanto da expansão da matriz elétrica brasileira em 2026 veio da energia solar?",
+            "acerto": true,
+            "resposta": "A energia solar contribuiu para cerca de 73% da expansão da matriz elétrica brasileira em 2026."
+          },
+          {
+            "pergunta": "Quantos sistemas de energia solar Mato Grosso tem?",
+            "acerto": true,
+            "resposta": "Mato Grosso tem 239 mil sistemas de energia solar."
+          },
+          {
+            "pergunta": "Qual a eficiência mínima exigida para painéis solares na China?",
+            "acerto": true,
+            "resposta": "A eficiência mínima exigida para painéis solares na China é de 23,2%."
+          },
+          {
+            "pergunta": "Quantos lares na Alemanha usam painel solar de varanda?",
+            "acerto": true,
+            "resposta": "1 milhão de lares na Alemanha usam painel solar de varanda."
+          },
+          {
+            "pergunta": "Quanto de energia já foi cortada por curtailment no Brasil desde 2021?",
+            "acerto": true,
+            "resposta": "Desde 2021, o Brasil já soma 73,4 milhões de MWh de energia cortada por curtailment."
+          },
+          {
+            "pergunta": "Quem ganhou a Copa do Mundo de 2022?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          },
+          {
+            "pergunta": "Qual a receita de bolo de cenoura?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          }
+        ]
+      },
+      "relatorio": {
+        "relatorios_confiaveis": 1.0,
+        "numeros_ok": 1.0,
+        "secoes_media": 4.0,
+        "tempo_medio_s": 2.63
+      },
+      "exemplos": {
+        "resumo": {
+          "titulo": "Com três meses de antecedência, setor solar supera projeções para 2026 apesar dos desafios",
+          "resumo": "O Brasil superou projetadas capacidades de energia solar em menos de três meses, acumulando 77,6 GW até agora, além de adicionar 10,6 GW em 2026, resultando na expansão de 75,9 GW."
+        },
+        "relatorio": {
+          "cidade": "Curitiba (PR)",
+          "relatorio": "```markdown\n# Relatório Curitiba - Viabilidade de Energia Solar\n\n## Potencial Solar do Local\n- **Irradiância Média**: 4,39 kWh/m² por dia (horas de sol pleno)\n- **Geração Esperada**: 14,05 kWh por dia, 427,5 kWh por mês, 5.130 kWh por ano\n- **Economia Esperada**: R$ 406,12 por mês, R$ 4.873,40 por ano\n\n## Variável Anual do Local\n- **Mês Mais Esolar**: Dezembro (5,08 kWh/m²/dia)\n- **Mês Menor Esolar**: Junho (3,52 kWh/m²/dia)\n\n## Orçamento e Conferências\n- **Orçamento**: Pedir orçamentos a instaladores e verificar regras de geração distribuída da ANEEL e da distribuidora.\n- **Conferências**: Reuniões com instalações e distribuidores para entender as regras de geração.\n\n---\n\n### Próximos Passos\n- **Revisar Regras de Geração Distribuída**: Compreender as regras de geração distribuída da ANEEL e da distribuidora.\n- **Compreender Geração Distribuída**: Entender melhor como a geração será distribuída.\n- **Conferências**: Reuniões com instalações e distribuidores para entender as regras de geração distribuída.\n\n---\n\n**Observações:** \n- **Estação Curitiba**: 3.9 km, painéis inclinados a 21° voltados para o norte.\n- **Melhor Mês**: Dezembro (5,08 kWh/m²/dia).\n- **Pior Mês**: Junho (3,52 kWh/m²/dia).\n```\n\nEste relatório fornece um resumo detalhado dos dados e expectativas para a viabilidade de energia solar no local de Curitiba, com orientações para futuros passos.",
+          "verificacao": {
+            "numeros_citados": [
+              3.52,
+              3.9,
+              4.39,
+              5.08,
+              14.05,
+              21.0,
+              406.12,
+              427.5,
+              4873.4,
+              5130.0
+            ],
+            "nao_encontrados": [],
+            "confiavel": true
+          }
+        }
+      }
+    },
+    {
+      "modelo": "Qwen/Qwen2.5-1.5B-Instruct",
+      "parametros_milhoes": 1543.7,
+      "dispositivo": "mps",
+      "dtype": "float16",
+      "carga_s": 2.6,
+      "memoria_gb": 2.9,
+      "sentimento": {
+        "acuracia": 0.5,
+        "f1_macro": 0.301,
+        "tempo_medio_s": 0.8,
+        "erros": [
+          {
+            "titulo": "China propõe controlar exportações de 40 tecnologias de IA, energia solar e biofarmacêuticos",
+            "esperado": "negativo",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Câmara aprova urgência do PL que faz rateio de custos de baterias elétricas",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Brasol monitora mais de 150 usinas solares contra incêndios",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Agentes pedem neutralidade no edital do leilão de baterias e revisão do risco de inadimplência",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Nova regra na China: painéis solares deverão ter eficiência mínima de 23,2% e pelo menos 630W",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Energia volta a pressionar inflação em diferentes economias do mundo",
+            "esperado": "negativo",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Reforma tributária: ANEEL propõe consultas sobre PIS/Cofins e créditos no setor elétrico",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Falta de capacitação ainda limita venda e instalação de sistemas de armazenamento no Brasil, diz COO da Solfácil",
+            "esperado": "negativo",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Governo define critérios de conteúdo nacional para leilão de baterias",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Propriedade intelectual no setor de energia: o que a lei brasileira prevê para cópia de produtos e patentes?",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Seguro para usinas solares exige atenção aos riscos e aos limites de cobertura",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Entidades e frentes parlamentares pedem a Lula regulamentação do Redata com gás natural",
+            "esperado": "negativo",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "ANEEL confirma que edital do leilão de baterias deve ser analisado em 27 de outubro, com publicação prevista para dia 29",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Operação policial mira funcionária suspeita de desviar R$ 600 mil de empresa de energia solar",
+            "esperado": "negativo",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Como evitar perdas e desbalanceamentos em sistemas de armazenamento de energia?",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Consumo de energia por servidores de IA deve dobrar até 2030",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "ANEEL aprova reajuste nas tarifas da Equatorial Pará; veja os índices por classe",
+            "esperado": "negativo",
+            "previsto": "positivo"
+          }
+        ]
+      },
+      "resumo": {
+        "palavras_media": 60.4,
+        "no_limite": 1.0,
+        "em_portugues": 1.0,
+        "numeros_fieis": 1.0,
+        "tempo_medio_s": 2.48,
+        "tokens_por_s": 67.2
+      },
+      "qa": {
+        "acerto": 1.0,
+        "acerto_no_escopo": 1.0,
+        "recusa_correta": 1.0,
+        "citou_fonte": 0.9,
+        "em_portugues": 1.0,
+        "tempo_medio_s": 1.81,
+        "respostas": [
+          {
+            "pergunta": "Qual capital tem a maior irradiação solar?",
+            "acerto": true,
+            "resposta": "Recife (PE) tem a maior irradiação solar, com 6,06 kWh/m²/dia. Fortaleza (CE) vem em segundo lugar, com 5,83 kWh/m²/dia. Belo Horizonte (MG) segue na terceira posição, com 5,00 kWh/m²/dia. Manaus (AM) ocupa a quarta posição, com 4,79 kWh/m²/dia. Porto Alegre (RS) está na quinta posição, com 4,52 kWh/m²/dia. São Paulo (SP) fica na sexta posição, com 4,47 kWh/m²/dia."
+          },
+          {
+            "pergunta": "Qual capital tem a menor irradiação solar?",
+            "acerto": true,
+            "resposta": "Recife (PE) tem a menor irradiação solar, com apenas 4,31 kWh/m²/dia. [1] Fortaleza (CE) tem a segunda menor irradiação, com 5,41 kWh/m²/dia. Belo Horizonte (MG) tem a terceira menor irradiação, com 5,00 kWh/m²/dia. Curitiba (PR) tem a menor irradiação solar dos 10 principais destinos listados."
+          },
+          {
+            "pergunta": "Quanto um sistema de 5 kWp gera por mês em Curitiba?",
+            "acerto": true,
+            "resposta": "O sistema de 5 kWp de Curitiba produz cerca de 534 kWh por mês em média, conforme informado na ficha de potencial solar. [1]"
+          },
+          {
+            "pergunta": "Qual a irradiação solar média de Fortaleza?",
+            "acerto": true,
+            "resposta": "A irradiação solar média de Fortaleza foi de 5,83 kWh/m² por dia, conforme informado na ficha de potencial solar da NASA POWER + CRESESB, entre 17/10/2025 e 17/10/2026. Esta informação está disponível na referência [1]."
+          },
+          {
+            "pergunta": "O que é o leilão de baterias?",
+            "acerto": true,
+            "resposta": "O leilão de baterias é um evento onde o governo federal compra sistemas de armazenamento de energia em baterias. [1] Os sistemas devem ser produzidos no Brasil e terem certificado emitido pelo Banco Nacional de Desenvolvimento Econômico e Social (BNDES). Na fase pré-contratual, o BNDES deve emitir certificados para a ANEEL, que autoriza a assinatura do Contrato de Potência de Reserva de Capacidade (CRCAP). Durante a implantação, esses certificados precisam ser apresentados para iniciar a operação comercial do empreendimento."
+          },
+          {
+            "pergunta": "Quanto da expansão da matriz elétrica brasileira em 2026 veio da energia solar?",
+            "acerto": true,
+            "resposta": "Solar responde por 73% da expansão da matriz elétrica brasileira em 2026. [2] [3] [4]"
+          },
+          {
+            "pergunta": "Quantos sistemas de energia solar Mato Grosso tem?",
+            "acerto": true,
+            "resposta": "Mato Grosso supera 239 mil sistemas de energia solar. [2] Mato Grosso está entre os estados que mais expandiram geração própria. [3] Mato Grosso tem mais de 239 mil sistemas de energia solar em operação."
+          },
+          {
+            "pergunta": "Qual a eficiência mínima exigida para painéis solares na China?",
+            "acerto": true,
+            "resposta": "Na China, painéis solares devem ter eficiência mínima de 23,2%. Fonte: [1] Esta nova regra está sendo implementada a partir de 1º de janeiro de 2027. As medidas visam garantir que os produtos cumpram especificações técnicas específicas. Essas normas são parte de um conjunto de regulamentações nacionais obrigatórias para o setor fotovoltaico. O objetivo é promover a eficiência energética e reduzir o impacto ambiental do setor solar."
+          },
+          {
+            "pergunta": "Quantos lares na Alemanha usam painel solar de varanda?",
+            "acerto": true,
+            "resposta": "1 milhão de lares já usam minigeradores de 800 watts direto na tomada na Alemanha. [2] Os moradores só precisam fazer um cadastro rápido para registrar sua usina de varanda. [3] A inflação em diferentes economias do mundo, incluindo a Alemanha, continua pressionando."
+          },
+          {
+            "pergunta": "Quanto de energia já foi cortada por curtailment no Brasil desde 2021?",
+            "acerto": true,
+            "resposta": "Aqui estão as respostas:\n\n1. Curtailment já soma 73,4 milhões de MWh no Brasil desde 2021. [1] 2. 3. 4."
+          },
+          {
+            "pergunta": "Quem ganhou a Copa do Mundo de 2022?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          },
+          {
+            "pergunta": "Qual a receita de bolo de cenoura?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          }
+        ]
+      },
+      "relatorio": {
+        "relatorios_confiaveis": 0.333,
+        "numeros_ok": 0.936,
+        "secoes_media": 4.0,
+        "tempo_medio_s": 5.84
+      },
+      "exemplos": {
+        "resumo": {
+          "titulo": "Com três meses de antecedência, setor solar supera projeções para 2026 apesar dos desafios",
+          "resumo": "O setor solar brasileiro superou suas projeções para 2026, alcançando 77,6 GW de potência instalada, embora enfrentassem desafios como cortes de geração e dificuldades na conexão de novos sistemas. Apesar das expectativas iniciais de 75,9 GW, o Brasil já ultrapassou esses limites com menos de três meses de antecedência."
+        },
+        "relatorio": {
+          "cidade": "Curitiba (PR)",
+          "relatorio": "### Potencial Solar do Local\n\nCuritiba, na região sul do estado do Paraná, possui um potencial solar elevado, com uma média diária de 4,39 kWh/m² por dia, conforme medidas pelo Instituto Nacional de Pesquisas Espaciais (INPE) através do Sistema Operacional de Energia Renovável e Sustentável (SOER-SUS). Este valor representa cerca de 4,0 kWp de potência instalada.\n\n### Geração e Economia Esperadas\n\nCom um sistema fotovoltaico de 4,0 kWp, a cidade de Curitiba pode gerar aproximadamente 14,05 kWh por dia, equivalente a 427,5 kWh por mês e 5.130 kWh por ano. A taxa de desempenho do sistema é de 0,80, o que significa que apenas 80% da energia produzida será utilizada efetivamente.\n\nA geração estimada mensalmente seria de R$ 406,12, representando uma economia mensal de R$ 4.873,40 por ano. No entanto, é importante notar que esta estimativa pode variar dependendo das condições climáticas específicas do mês.\n\n### Variação ao Longo do Ano\n\nO mês de dezembro, considerado o melhor do ano, proporcionaria uma geração de 5,08 kWh/m²/dia, enquanto o mês de junho apresentaria a menor produção, com apenas 3,52 kWh/m²/dia. Esta variação é natural e deve ser levada em conta durante o planejamento do projeto.\n\n### Próximos Passos\n\nPara garantir a implementação correta do sistema, recomendamos solicitar orçamentos a profissionais especializados em instalação de sistemas fotovoltaicos. Além disso, é crucial verificar as regras de geração distribuída da Agência Nacional de Energia Elétrica (ANEEL) e da distribuidora local, pois esses regulamentos podem influenciar diretamente na capacidade de geração e na tarifa aplicada.",
+          "verificacao": {
+            "numeros_citados": [
+              0.8,
+              3.52,
+              4.0,
+              4.39,
+              5.08,
+              14.05,
+              80.0,
+              406.12,
+              427.5,
+              4873.4,
+              5130.0
+            ],
+            "nao_encontrados": [
+              80.0
+            ],
+            "confiavel": false
+          }
+        }
+      }
+    },
+    {
+      "modelo": "Qwen/Qwen3-1.7B",
+      "parametros_milhoes": 1720.6,
+      "dispositivo": "mps",
+      "dtype": "float16",
+      "carga_s": 3.1,
+      "memoria_gb": 3.22,
+      "sentimento": {
+        "acuracia": 0.794,
+        "f1_macro": 0.653,
+        "tempo_medio_s": 1.0,
+        "erros": [
+          {
+            "titulo": "China propõe controlar exportações de 40 tecnologias de IA, energia solar e biofarmacêuticos",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Brasol monitora mais de 150 usinas solares contra incêndios",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Energia volta a pressionar inflação em diferentes economias do mundo",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Falta de capacitação ainda limita venda e instalação de sistemas de armazenamento no Brasil, diz COO da Solfácil",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Entidades e frentes parlamentares pedem a Lula regulamentação do Redata com gás natural",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "ANEEL aprova reajuste nas tarifas da Equatorial Pará; veja os índices por classe",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Curtailment já soma 73,4 milhões de MWh no Brasil desde 2021",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          }
+        ]
+      },
+      "resumo": {
+        "palavras_media": 63.1,
+        "no_limite": 1.0,
+        "em_portugues": 1.0,
+        "numeros_fieis": 1.0,
+        "tempo_medio_s": 2.9,
+        "tokens_por_s": 57.9
+      },
+      "qa": {
+        "acerto": 1.0,
+        "acerto_no_escopo": 1.0,
+        "recusa_correta": 1.0,
+        "citou_fonte": 1.0,
+        "em_portugues": 1.0,
+        "tempo_medio_s": 1.83,
+        "respostas": [
+          {
+            "pergunta": "Qual capital tem a maior irradiação solar?",
+            "acerto": true,
+            "resposta": "A capital com maior irradiação solar é Recife (PE), com 6,06 kWh/m²/dia [1]. A capital com menor irradiação solar é Curitiba (PR), com 4,31 kWh/m²/dia [1]. O ranking da irradiação solar média por satélite está disponível em [1]. A irradiação solar média anual em Curitiba é de 4,39 kWh/m²/dia [1]."
+          },
+          {
+            "pergunta": "Qual capital tem a menor irradiação solar?",
+            "acerto": true,
+            "resposta": "A capital com menor irradiação solar é Curitiba (PR), com 4,31 kWh/m²/dia [4]. A menor irradiação é registrada em 06/2026, com 2,60 kWh/m²/dia [4]. A irradiação média anual na base de longo prazo é de 4,39 kWh/m²/dia [4]. A menor irradiação é mencionada no ranking geral [1]."
+          },
+          {
+            "pergunta": "Quanto um sistema de 5 kWp gera por mês em Curitiba?",
+            "acerto": true,
+            "resposta": "Um sistema de 5 kWp gera aproximadamente 534 kWh por mês em média [1]. O valor é calculado considerando a irradiação média anual de 4,39 kWh/m²/dia e a taxa de desempenho de 0,80 [1]. Este número é compatível com a análise do ranking solar em Curitiba [3]. Não há dados específicos sobre o consumo real do sistema em Curitiba [1]."
+          },
+          {
+            "pergunta": "Qual a irradiação solar média de Fortaleza?",
+            "acerto": true,
+            "resposta": "A irradiação solar média de Fortaleza é de 5,83 kWh/m²/dia [1]. O valor médio anual é de 5,70 kWh/m²/dia [1]. O mês mais ensolarado é out/2026 (6,99 kWh/m²/dia) [1]. O mês menos ensolarado é abr/2026 (4,37 kWh/m²/dia) [1]."
+          },
+          {
+            "pergunta": "O que é o leilão de baterias?",
+            "acerto": true,
+            "resposta": "O leilão de baterias é um processo onde sistemas de armazenamento de energia em baterias são concorrerem para serem contratados pelo governo [1]. Ele tem duas etapas: pré-contratual e durante a implantação [1]. O objetivo é garantir que os sistemas forem nacionalizados e comprovem sua origem [1]."
+          },
+          {
+            "pergunta": "Quanto da expansão da matriz elétrica brasileira em 2026 veio da energia solar?",
+            "acerto": true,
+            "resposta": "A energia solar respondeu por 73% da expansão da matriz elétrica brasileira em 2026, conforme informado em [1]. Nas primeiras oito meses do ano, 3,52 GW de potência foram adicionadas pela solar, equivalente a 72,6% da capacidade total adicionada. A fonte solar liderou em número de novas usinas, com 75 novas entrando em operação, representando 82,4% do total."
+          },
+          {
+            "pergunta": "Quantos sistemas de energia solar Mato Grosso tem?",
+            "acerto": true,
+            "resposta": "Mato Grosso possui mais de 239 mil sistemas de energia solar em operação [1]. O estado está entre os estados que mais expandiram a geração própria no Brasil [1]. A expansão ocorreu com cerca de 48 mil novas instalações nos últimos 12 meses [1]. O número de sistemas é considerado o maior percentual já registrado no país [1]."
+          },
+          {
+            "pergunta": "Qual a eficiência mínima exigida para painéis solares na China?",
+            "acerto": true,
+            "resposta": "A eficiência mínima exigida para painéis solares na China é de 23,2% [1]. Os painéis devem ter pelo menos 630W de potência nominal [1]. As normas incluem requisitos de eficiência para tecnologias como TOPCon e HJT [1]. Essas regras estão vinculativas e aplicam-se a todos os módulos comercializados no país [1]."
+          },
+          {
+            "pergunta": "Quantos lares na Alemanha usam painel solar de varanda?",
+            "acerto": true,
+            "resposta": "Na Alemanha, mais de 1 milhão de lares já usam painéis solares de varanda [1]. O número foi alcançado após a simplificação do processo de registro pela Bundesnetzagentur [1]. A legislação limita o tamanho dos painéis a 800 watts [1]."
+          },
+          {
+            "pergunta": "Quanto de energia já foi cortada por curtailment no Brasil desde 2021?",
+            "acerto": true,
+            "resposta": "Desde 2021, o Curtailment no Brasil já soma 73,4 milhões de MWh, conforme informado em [1]. O levantamento da Volt Robotics mostra que o volume médio de cortes em 2026 foi de 3.853 MW médios, equivalendo a 22,47 bilhões de kWh."
+          },
+          {
+            "pergunta": "Quem ganhou a Copa do Mundo de 2022?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          },
+          {
+            "pergunta": "Qual a receita de bolo de cenoura?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          }
+        ]
+      },
+      "relatorio": {
+        "relatorios_confiaveis": 1.0,
+        "numeros_ok": 1.0,
+        "secoes_media": 4.0,
+        "tempo_medio_s": 6.75
+      },
+      "exemplos": {
+        "resumo": {
+          "titulo": "Com três meses de antecedência, setor solar supera projeções para 2026 apesar dos desafios",
+          "resumo": "O setor solar no Brasil superou as projeções de 2026 com 77,6 GW de potência instalada, superando a estimativa de 75,9 GW divulgada pela ABSOLAR. Apesar de desafios como cortes de geração e problemas de conexão, o setor alcançou resultados acima do esperado, com 54 GW de geração distribuída e 23,6 GW de geração centralizada, superando a projeção total de 1,7 GW."
+        },
+        "relatorio": {
+          "cidade": "Curitiba (PR)",
+          "relatorio": "# Relatório de Viabilidade Energética Solar - Curitiba (PR)\n\n## Potencial solar do local  \nO local possui um potencial solar médio de 4,39 kWh/m² por dia, com variação entre 3,52 (julho) e 5,08 (dezembro). A estação Curitiba apresenta condições climáticas favoráveis, com baixa cobertura de nuvens e temperaturas médias de 18,4°C, garantindo uma irradiância estável durante todo o ano.\n\n## Geração e economia esperadas  \nCom um sistema de 4,0 kWp, a geração diária é de 14,05 kWh, resultando em 427,5 kWh por mês e 5.130 kWh por ano. Isso representa uma economia mensal de R$ 406,12 e anual de R$ 4.873,40, considerando a tarifa de R$ 0,95 por kWh.\n\n## Variação ao longo do ano  \nA irradiação solar varia conforme o mês, sendo maior em dezembro (5,08 kWh/m²/dia) e menor em junho (3,52 kWh/m²/dia). O melhor mês é dezembro, enquanto o pior é junho, influenciando a produção energética.\n\n## Próximos passos  \nÉ recomendado solicitar orçamentos a instaladores especializados para avaliação detalhada do projeto. Além disso, é importante verificar as regras de geração distribuída da ANEEL e da distribuidora para garantir conformidade com as normativas locais.",
+          "verificacao": {
+            "numeros_citados": [
+              0.95,
+              3.52,
+              4.0,
+              4.39,
+              5.08,
+              14.05,
+              18.4,
+              406.12,
+              427.5,
+              4873.4,
+              5130.0
+            ],
+            "nao_encontrados": [],
+            "confiavel": true
+          }
+        }
+      }
+    },
+    {
+      "modelo": "HuggingFaceTB/SmolLM3-3B",
+      "parametros_milhoes": 3075.1,
+      "dispositivo": "mps",
+      "dtype": "float16",
+      "carga_s": 6.0,
+      "memoria_gb": 5.73,
+      "sentimento": {
+        "acuracia": 0.382,
+        "f1_macro": 0.245,
+        "tempo_medio_s": 1.41,
+        "erros": [
+          {
+            "titulo": "ABSOLAR: Custo de energia solar no Brasil só perderá para China em 2035, diz Irena",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "China propõe controlar exportações de 40 tecnologias de IA, energia solar e biofarmacêuticos",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "WEG será parceira da GreenYellow em projeto de geração solar para 54 lojas do Carrefour Brasil",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Painel solar de varanda vira febre na Alemanha: 1 milhão de lares já usam minigeradores de 800 watts direto na tomada",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Mato Grosso supera 239 mil sistemas de energia solar e está entre os estados que mais expandiram geração própria",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Aneel libera Petrobras para operar usina solar no complexo de Itaboraí",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Usina solar de 142 MW entra em operação em Minas Gerais",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Irena: custo de energias renováveis despenca em 15 anos e deve cair mais",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Energia volta a pressionar inflação em diferentes economias do mundo",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Cemig fornecerá energia renovável ao Exército Brasileiro em dez estados",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Falta de capacitação ainda limita venda e instalação de sistemas de armazenamento no Brasil, diz COO da Solfácil",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Com boom de data centers, Nordeste projeta crescimento econômico acima da média nacional",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Entidades e frentes parlamentares pedem a Lula regulamentação do Redata com gás natural",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Operação policial mira funcionária suspeita de desviar R$ 600 mil de empresa de energia solar",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "BESS reduz conta de energia de hortifrúti em Curitiba (PR)",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "ANEEL autoriza operação de usina solar da Statkraft com projeto de BESS colocalizado",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Hidrelétricas de pequeno porte podem movimentar R$ 169 bilhões no Brasil",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "ANEEL aprova reajuste nas tarifas da Equatorial Pará; veja os índices por classe",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Curtailment já soma 73,4 milhões de MWh no Brasil desde 2021",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Projeto quer impedir novas cobranças sobre consumidores com energia solar",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Solar responde por 73% da expansão da matriz elétrica brasileira em 2026",
+            "esperado": "positivo",
+            "previsto": "neutro"
+          }
+        ]
+      },
+      "resumo": {
+        "palavras_media": 51.4,
+        "no_limite": 1.0,
+        "em_portugues": 1.0,
+        "numeros_fieis": 0.975,
+        "tempo_medio_s": 4.55,
+        "tokens_por_s": 38.8
+      },
+      "qa": {
+        "acerto": 1.0,
+        "acerto_no_escopo": 1.0,
+        "recusa_correta": 1.0,
+        "citou_fonte": 1.0,
+        "em_portugues": 1.0,
+        "tempo_medio_s": 2.81,
+        "respostas": [
+          {
+            "pergunta": "Qual capital tem a maior irradiação solar?",
+            "acerto": true,
+            "resposta": "A capital com maior irradiação solar, conforme o ranking fornecido, é Recife (PE), com 6,06 kWh/m²/dia. Isso pode ser encontrado no trecho [1], onde o ranking das capitais é apresentado."
+          },
+          {
+            "pergunta": "Qual capital tem a menor irradiação solar?",
+            "acerto": true,
+            "resposta": "A capital com a menor irradiação solar, conforme indicado no ranking [1], é Curitiba (PR), com 4,31 kWh/m²/dia. No entanto, no contexto específico da ficha de potencial solar de Curitiba [4], a irradiação média anual com painéis inclinados é de 4,39 kWh/m²/dia, mas isso se refere à variação sazonal. A menor irradiação absoluta durante o período analisado é 2,60 kWh/m²/dia, ocorrendo em junho. Portanto, a resposta correta é Curitiba (PR), com 4,31 kWh/m²/dia sendo a irradiação média diária. Para confirmar, consultamos também o ranking geral [1], onde Curitiba está na posição 10, com a menor irradiação."
+          },
+          {
+            "pergunta": "Quanto um sistema de 5 kWp gera por mês em Curitiba?",
+            "acerto": true,
+            "resposta": "Um sistema de 5 kWp em Curitiba (PR) gera aproximadamente 534 kWh por mês em média, conforme indicado no trecho [1]."
+          },
+          {
+            "pergunta": "Qual a irradiação solar média de Fortaleza?",
+            "acerto": true,
+            "resposta": "A irradiação solar média de Fortaleza (CE) entre 17/10/2025 e 17/10/2026, conforme [1], foi de 5,83 kWh/m² por dia. No ranking das capitais pelo potencial solar, Fortaleza ocupou a segunda posição, atrás apenas de Recife (PE), com 6,06 kWh/m²/dia, conforme [2]. Em termos de geração mensal, um sistema de 5,0 kWp com taxa de desempenho de 0,80 geraria aproximadamente 693 kWh por mês em média, conforme [1]."
+          },
+          {
+            "pergunta": "O que é o leilão de baterias?",
+            "acerto": true,
+            "resposta": "O leilão de baterias refere-se a um processo competitivo organizado pelo governo federal para aquisição de sistemas de armazenamento de energia por meio de baterias, visando garantir a produção nacional e promover o desenvolvimento tecnológico. Esse leilão faz parte do Programa de Aceleração do Crescimento (PAC) e visa selecionar fornecedores que cumpram os critérios de conteúdo nacional, especificamente a utilização de componentes manufaturados no Brasil. As duas fases do leilão são planejadas para ocorrerem em dezembro de 2026, com diferentes requisitos para os sistemas candidatos. [1], [3]"
+          },
+          {
+            "pergunta": "Quanto da expansão da matriz elétrica brasileira em 2026 veio da energia solar?",
+            "acerto": true,
+            "resposta": "Solar responde por 73% da expansão da matriz elétrica brasileira em 2026. [2] [3] Não há menção específica à contribuição percentual da energia solar para a expansão da matriz elétrica em 2026 neste trecho. [4]"
+          },
+          {
+            "pergunta": "Quantos sistemas de energia solar Mato Grosso tem?",
+            "acerto": true,
+            "resposta": "Mato Grosso supera 239 mil sistemas de energia solar e está entre os estados que mais expandiram geração própria. [2] Solar responde por 73% da expansão da matriz elétrica brasileira em 2026. [3] [4]"
+          },
+          {
+            "pergunta": "Qual a eficiência mínima exigida para painéis solares na China?",
+            "acerto": true,
+            "resposta": "Na China, a eficiência mínima exigida para painéis solares é de 23,2%, conforme descrito em [1] e [2]."
+          },
+          {
+            "pergunta": "Quantos lares na Alemanha usam painel solar de varanda?",
+            "acerto": true,
+            "resposta": "1 milhão de lares já usam minigeradores de 800 watts direto na tomada. [2] O fenômeno tem nome, Balkonkraftwerk, e um limite gravado em lei: 800 watts, o equivalente a uma geladeira e um notebook ligados ao mesmo tempo. Quantos lares na Alemanha usam painel solar de varanda?"
+          },
+          {
+            "pergunta": "Quanto de energia já foi cortada por curtailment no Brasil desde 2021?",
+            "acerto": true,
+            "resposta": "O curtailment já soma 73,4 milhões de MWh no Brasil desde 2021, conforme informado em [1], [2] e [3]."
+          },
+          {
+            "pergunta": "Quem ganhou a Copa do Mundo de 2022?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          },
+          {
+            "pergunta": "Qual a receita de bolo de cenoura?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          }
+        ]
+      },
+      "relatorio": {
+        "relatorios_confiaveis": 1.0,
+        "numeros_ok": 1.0,
+        "secoes_media": 4.0,
+        "tempo_medio_s": 6.39
+      },
+      "exemplos": {
+        "resumo": {
+          "titulo": "Com três meses de antecedência, setor solar supera projeções para 2026 apesar dos desafios",
+          "resumo": "O setor solar brasileiro superou as projeções iniciais da ABSOLAR, que previa 75,9 GW de potência instalada até o final de 2026. Com 77,6 GW instalados há menos de três meses, o país já ultrapassou a marca, incluindo sistemas de geração própria e grandes usinas."
+        },
+        "relatorio": {
+          "cidade": "Curitiba (PR)",
+          "relatorio": "## Potencial solar do local\nA cidade de Curitiba possui um potencial solar significativo, com irradiação média anual de 4,39 kWh/m²/dia, considerando condições ideais de instalação dos painéis solares.\n\n## Geração e economia esperadas\nCom um sistema de 4,0 kWp e taxa de desempenho de 0,80, espera-se gerar aproximadamente 5.130 kWh por ano, resultando em economias mensais de R$ 406,12 e anuais de R$ 4.873,40, dependendo das tarifas locais.\n\n## Variação ao longo do ano\nA variação na geração solar ao longo do ano é moderada, com meses mais ensombrados como junho (3,52 kWh/m²/dia) e meses mais ensolarados como dezembro (5,08 kWh/m²/dia), influenciando a produção total anual.\n\n## Próximos passos\nRecomenda-se entrar em contato com instaladores autorizados para obter orçamentos detalhados e verificar as regras de geração distribuída da ANEEL e da distribuidora local.",
+          "verificacao": {
+            "numeros_citados": [
+              0.8,
+              3.52,
+              4.0,
+              4.39,
+              5.08,
+              406.12,
+              4873.4,
+              5130.0
+            ],
+            "nao_encontrados": [],
+            "confiavel": true
+          }
+        }
+      }
+    },
+    {
+      "modelo": "Qwen/Qwen3-4B-Instruct-2507",
+      "parametros_milhoes": 4022.5,
+      "dispositivo": "mps",
+      "dtype": "float16",
+      "carga_s": 7.6,
+      "memoria_gb": 7.56,
+      "sentimento": {
+        "acuracia": 0.824,
+        "f1_macro": 0.79,
+        "tempo_medio_s": 2.08,
+        "erros": [
+          {
+            "titulo": "China propõe controlar exportações de 40 tecnologias de IA, energia solar e biofarmacêuticos",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Brasol monitora mais de 150 usinas solares contra incêndios",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Falta de capacitação ainda limita venda e instalação de sistemas de armazenamento no Brasil, diz COO da Solfácil",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Entidades e frentes parlamentares pedem a Lula regulamentação do Redata com gás natural",
+            "esperado": "negativo",
+            "previsto": "neutro"
+          },
+          {
+            "titulo": "Como evitar perdas e desbalanceamentos em sistemas de armazenamento de energia?",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          },
+          {
+            "titulo": "Consumo de energia por servidores de IA deve dobrar até 2030",
+            "esperado": "neutro",
+            "previsto": "positivo"
+          }
+        ]
+      },
+      "resumo": {
+        "palavras_media": 50.1,
+        "no_limite": 1.0,
+        "em_portugues": 1.0,
+        "numeros_fieis": 1.0,
+        "tempo_medio_s": 3.53,
+        "tokens_por_s": 27.1
+      },
+      "qa": {
+        "acerto": 1.0,
+        "acerto_no_escopo": 1.0,
+        "recusa_correta": 1.0,
+        "citou_fonte": 1.0,
+        "em_portugues": 1.0,
+        "tempo_medio_s": 4.02,
+        "respostas": [
+          {
+            "pergunta": "Qual capital tem a maior irradiação solar?",
+            "acerto": true,
+            "resposta": "A capital com a maior irradiação solar é Recife (PE), com 6,06 kWh/m²/dia [1]. Isso é confirmado pelo ranking das capitais pela irradiação solar média medida por satélite [1]. Recife também está em primeiro lugar no ranking de irradiação de longo prazo do CRESESB [1]. Portanto, Recife tem o maior potencial solar entre as capitais listadas."
+          },
+          {
+            "pergunta": "Qual capital tem a menor irradiação solar?",
+            "acerto": true,
+            "resposta": "A capital com a menor irradiação solar é Curitiba (PR), com 4,31 kWh/m²/dia, conforme indicado no ranking das capitais [1]. Essa é também a menor irradiação registrada no período analisado [1]. Em comparação com outras cidades, Curitiba está na última posição do ranking [1]. Portanto, Curitiba tem o menor potencial solar entre as capitais listadas [1]."
+          },
+          {
+            "pergunta": "Quanto um sistema de 5 kWp gera por mês em Curitiba?",
+            "acerto": true,
+            "resposta": "Um sistema de 5,0 kWp em Curitiba gera cerca de 534 kWh por mês em média [1]. Esse valor é baseado na irradiação solar média anual de 4,39 kWh/m²/dia com taxa de desempenho de 0,80 [1]. A geração mensal é consistente com os dados do ranking do CRESESB, que indica 534 kWh por mês para Curitiba [3]."
+          },
+          {
+            "pergunta": "Qual a irradiação solar média de Fortaleza?",
+            "acerto": true,
+            "resposta": "A irradiação solar média de Fortaleza é de 5,83 kWh/m² por dia, conforme medido por satélite entre 17/10/2025 e 17/10/2026 [1]. Essa média corresponde às horas de sol pleno por dia [1]. No longo prazo, com painéis inclinados a 3° voltados para o norte, a irradiação média anual é de 5,70 kWh/m²/dia [1]."
+          },
+          {
+            "pergunta": "O que é o leilão de baterias?",
+            "acerto": true,
+            "resposta": "O leilão de baterias é um processo de contratação para a aquisição de sistemas de armazenamento de energia por baterias (BESS) que oferecem disponibilidade de potência [1]. Ele ocorrerá em duas etapas, em 2 e 4 de dezembro de 2026, com contratos de 15 anos e início de suprimento em 1º de agosto de 2028 [1]. Um dos leilões exige que os sistemas tenham conteúdo nacional comprovado pelo BNDES [3]. Os leilões visam garantir a reserva de capacidade elétrica por meio de armazenamento autônomo em baterias [1]."
+          },
+          {
+            "pergunta": "Quanto da expansão da matriz elétrica brasileira em 2026 veio da energia solar?",
+            "acerto": true,
+            "resposta": "A energia solar respondeu por 73% da expansão da matriz elétrica brasileira em 2026 [1]. Este dado é confirmado em múltiplos trechos do contexto, onde é mencionado que a fonte solar teve a maior participação na expansão [1]. Além disso, em agosto, a expansão foi liderada pela energia solar, com 75 novas usinas entrando em operação [1]. A energia solar também liderou em número de novos empreendimentos, representando 82,4% das 91 usinas que iniciaram operação [1]."
+          },
+          {
+            "pergunta": "Quantos sistemas de energia solar Mato Grosso tem?",
+            "acerto": true,
+            "resposta": "Mato Grosso tem mais de 239 mil sistemas de energia solar em operação [1]. Este número reflete sua posição entre os estados que mais expandiram a geração própria no Brasil [1]. A informação é confirmada por levantamentos da Solfácil com base em dados da Aneel [1]."
+          },
+          {
+            "pergunta": "Qual a eficiência mínima exigida para painéis solares na China?",
+            "acerto": true,
+            "resposta": "A eficiência mínima exigida para painéis solares na China é de 23,2% para tecnologias TOPCon e HJT [1]. Para o tipo BC (Back Contact), a eficiência mínima é de 23,5% [1]. Esse valor corresponde a uma potência nominal mínima de 630 W [2]. A exigência será aplicada a partir de 1º de janeiro de 2027 [1]."
+          },
+          {
+            "pergunta": "Quantos lares na Alemanha usam painel solar de varanda?",
+            "acerto": true,
+            "resposta": "Mais de um milhão de lares na Alemanha já usam minigeradores de 800 watts direto na tomada [1]. Esses painéis estão instalados nas varandas, pois é o único espaço que os moradores possuem [1]. O fenômeno é chamado de \"Balkonkraftwerk\" [1]. A quantidade mencionada é de 1 milhão de famílias [1]."
+          },
+          {
+            "pergunta": "Quanto de energia já foi cortada por curtailment no Brasil desde 2021?",
+            "acerto": true,
+            "resposta": "Já foram cortados 73,4 milhões de MWh de energia por curtailment no Brasil desde 2021 [1]. Esse valor pode chegar a 75,8 milhões de MWh quando consideradas correções adicionais nos dados [2]. A energia cortada corresponde a 22,47 bilhões de kWh [1]."
+          },
+          {
+            "pergunta": "Quem ganhou a Copa do Mundo de 2022?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          },
+          {
+            "pergunta": "Qual a receita de bolo de cenoura?",
+            "acerto": true,
+            "resposta": "Não encontrei essa informação nos dados do Solar Viável."
+          }
+        ]
+      },
+      "relatorio": {
+        "relatorios_confiaveis": 1.0,
+        "numeros_ok": 1.0,
+        "secoes_media": 4.0,
+        "tempo_medio_s": 11.72
+      },
+      "exemplos": {
+        "resumo": {
+          "titulo": "Com três meses de antecedência, setor solar supera projeções para 2026 apesar dos desafios",
+          "resumo": "O setor solar brasileiro ultrapassou as projeções para 2026, atingindo 77,6 GW de potência instalada — acima dos 75,9 GW previstos —, com geração distribuída 2,2 GW acima e centralizada 0,5 GW abaixo da expectativa, apesar de desafios como cortes de geração e dificuldades de conexão."
+        },
+        "relatorio": {
+          "cidade": "Curitiba (PR)",
+          "relatorio": "## Potencial solar do local  \nO potencial solar de Curitiba é moderado, com irradiação média de 4,39 kWh/m² por dia. A estação localizada a 3,9 km apresenta condições favoráveis, com painéis voltados para o norte e inclinação de 21°.\n\n## Geração e economia esperadas  \nUm sistema de 4,0 kWp gera 14,05 kWh por dia, totalizando 427,5 kWh por mês e 5.130 kWh por ano. A economia estimada é de R$ 406,12 por mês e R$ 4.873,40 por ano.\n\n## Variação ao longo do ano  \nA irradiação varia entre 3,52 kWh/m²/dia (junho) e 5,08 kWh/m²/dia (dezembro), com dezembro sendo o mês mais ensolarado e junho o pior.  \n\n## Próximos passos  \nPede-se orçamento a instaladores qualificados e confirmação das regras de geração distribuída da ANEEL e da distribuidora.",
+          "verificacao": {
+            "numeros_citados": [
+              3.52,
+              3.9,
+              4.0,
+              4.39,
+              5.08,
+              14.05,
+              21.0,
+              406.12,
+              427.5,
+              4873.4,
+              5130.0
+            ],
+            "nao_encontrados": [],
+            "confiavel": true
+          }
+        }
+      }
+    }
+  ],
+  "baseline": {
+    "modelo": "cardiffnlp/twitter-xlm-roberta-base-sentiment",
+    "parametros_milhoes": 278.0,
+    "carga_s": 1.2,
+    "acuracia": 0.353,
+    "f1_macro": 0.25,
+    "tempo_medio_s": 0.024,
+    "torch": "2.15.0"
+  }
+}

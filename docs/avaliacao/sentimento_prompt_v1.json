@@ -1,0 +1,29 @@
+{
+  "descricao": "Sentimento com o prompt v1 (definições curtas entre parênteses), mesma avaliação e mesmos rótulos",
+  "resultados": {
+    "Qwen/Qwen2.5-0.5B-Instruct": {
+      "acuracia": 0.529,
+      "f1_macro": 0.353
+    },
+    "Qwen/Qwen2.5-1.5B-Instruct": {
+      "acuracia": 0.529,
+      "f1_macro": 0.37
+    },
+    "Qwen/Qwen3-1.7B": {
+      "acuracia": 0.588,
+      "f1_macro": 0.48
+    },
+    "HuggingFaceTB/SmolLM3-3B": {
+      "acuracia": 0.735,
+      "f1_macro": 0.601
+    },
+    "Qwen/Qwen3-4B-Instruct-2507": {
+      "acuracia": 0.647,
+      "f1_macro": 0.579
+    },
+    "cardiffnlp/twitter-xlm-roberta-base-sentiment": {
+      "acuracia": 0.353,
+      "f1_macro": 0.25
+    }
+  }
+}

@@ -1,0 +1,13 @@
+pergunta,esperado,tipo
+Qual capital tem a maior irradiação solar?,Recife,comparativa
+Qual capital tem a menor irradiação solar?,Curitiba,comparativa
+Quanto um sistema de 5 kWp gera por mês em Curitiba?,534,numerica
+Qual a irradiação solar média de Fortaleza?,"5,83|5,70",numerica
+O que é o leilão de baterias?,armazenamento|bateria,conceito
+Quanto da expansão da matriz elétrica brasileira em 2026 veio da energia solar?,73,numerica
+Quantos sistemas de energia solar Mato Grosso tem?,239,numerica
+Qual a eficiência mínima exigida para painéis solares na China?,"23,2",numerica
+Quantos lares na Alemanha usam painel solar de varanda?,1 milhão|um milhão,numerica
+Quanto de energia já foi cortada por curtailment no Brasil desde 2021?,"73,4",numerica
+Quem ganhou a Copa do Mundo de 2022?,RECUSA,fora_do_escopo
+Qual a receita de bolo de cenoura?,RECUSA,fora_do_escopo
