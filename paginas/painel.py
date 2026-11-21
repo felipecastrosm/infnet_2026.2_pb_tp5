@@ -381,7 +381,12 @@ with aba_capitais:
                 tooltip=["cidade", "irradiacao_media", "payback_anos", "potencia_kwp"],
             )
         )
-        rotulos = disp.mark_text(align="left", dx=9, fontSize=11).encode(text=alt.Text("cidade:N"), color=alt.value("#57534e"))
+        extremos = df_b[df_b["cidade"].isin([melhor["cidade"], pior["cidade"]])]
+        rotulos = (
+            alt.Chart(extremos)
+            .mark_text(align="left", dx=10, fontSize=11, color="#57534e")
+            .encode(x="irradiacao_media:Q", y="payback_anos:Q", text="cidade:N")
+        )
         st.altair_chart((disp + rotulos).properties(height=300), use_container_width=True)
     st.markdown("**Irradiação ao longo do ano (CRESESB, painel inclinado)**")
     try:
@@ -408,8 +413,8 @@ with aba_capitais:
         "co2_evitado_kg_ano": "CO₂ evitado (kg/ano)", "classificacao": "Viabilidade",
     })
     st.dataframe(tabela, hide_index=True, width="stretch",
-                 column_config={"Investimento (R$)": st.column_config.NumberColumn(format="localized"),
-                                "Economia 25 anos (R$)": st.column_config.NumberColumn(format="localized")})
+                 column_config={"Investimento (R$)": st.column_config.NumberColumn(format="R$ %d"),
+                                "Economia 25 anos (R$)": st.column_config.NumberColumn(format="R$ %d")})
 
 
 # ---------------------------------------------------------------------------
