@@ -360,7 +360,7 @@ with aba_capitais:
     st.info(
         f"**Insight:** com {consumo_b} kWh/mês e R\\$ {ui.brl(tarifa_b, 2)}/kWh, o investimento se paga em "
         f"**{ui.brl(melhor['payback_anos'], 1)} anos em {melhor['cidade']}** e em **{ui.brl(pior['payback_anos'], 1)} anos em "
-        f"{pior['cidade']}**. Todas as capitais ficam abaixo de {ui.brl(df_b['payback_anos'].max() + 0.05, 1)} anos, "
+        f"{pior['cidade']}**. Em todas as capitais o sistema se paga em até {ui.brl(df_b['payback_anos'].max(), 1)} anos, "
         "para um sistema que dura 25: a energia solar é viável em todo o país, e o que muda é a velocidade do retorno.",
         icon=":material/insights:",
     )
