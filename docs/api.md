@@ -50,6 +50,15 @@ Community Cloud). A página **Explorar a API** do app lista as rotas a partir do
 | **POST** | `/llm/relatorio` | LLM | Relatório de viabilidade em linguagem simples, com checagem dos números |
 | GET | `/llm/corpus` | LLM | Estatísticas do corpus usado pelo LLM |
 | GET | `/llm/contexto` | LLM | Mostra os trechos que seriam enviados ao modelo para uma pergunta |
+| GET | `/agente/ferramentas` | Agente consultor (TP5) | As 7 ferramentas do agente e as dependências entre elas |
+| **POST** | `/agente/recomendar` | Agente consultor (TP5) | O LLM escolhe as análises, as ferramentas calculam e o LLM escreve a recomendação (números conferidos) |
+| GET | `/agente/recomendacoes/{id}` | Agente consultor (TP5) | Consulta uma recomendação já feita |
+| **POST** | `/conversas` | Conversa com memória (TP5) | Inicia uma conversa (opcionalmente sobre uma recomendação, `recomendacao_id`) |
+| GET | `/conversas/{id}` | Conversa com memória (TP5) | Histórico e estado da memória (fatos, resumo, janela) |
+| **POST** | `/conversas/{id}/mensagens` | Conversa com memória (TP5) | Pergunta reescrita com a memória, busca de contexto e resposta com fontes |
+| **DELETE** | `/conversas/{id}` | Conversa com memória (TP5) | Apaga a conversa (memória e arquivo) |
+| GET | `/painel` | Painel (TP5) | Indicadores do ciclo de ciência de dados, benchmark das capitais e sentimento das notícias |
+| GET | `/noticias/ia` | Notícias | Notícias resumidas e classificadas pelo LLM (lote) |
 
 Toda rota declara um **Response Model** (Pydantic), então o FastAPI valida cada resposta
 antes de enviá-la e o `/docs` mostra o formato exato.
@@ -72,6 +81,7 @@ Todo erro, de qualquer rota, sai no mesmo formato (`RespostaErro`):
 | HTTP | `erro` | Quando acontece |
 |---|---|---|
 | 404 | `nao_encontrado` | local inexistente, rota inexistente, nenhuma medição para apagar |
+| 404 | `conversa_nao_encontrada` | **(TP5)** conversa inexistente ou expirada (24 h sem uso) |
 | 405 | `metodo_nao_permitido` | método errado (ex.: GET em `/processar_texto`) |
 | 409 | `conflito` | enviar medições com o nome de uma capital da base |
 | 413 | `texto_longo_demais` | o texto passa do limite de tokens do modelo (`SOLAR_LLM_MAX_TOKENS_ENTRADA`) |
@@ -268,3 +278,28 @@ comparativas) e o prompt montado.
 | Pergunte ao Solar Viável | `GET /llm/status`, `POST /llm/perguntar` |
 | Resumo e sentimento | `GET /llm/status`, `GET /noticias`, `POST /processar_texto` |
 | Modelo local (LLM) | `GET /llm/status`, `POST /llm/carregar`, `GET /llm/corpus`, `GET /llm/contexto` |
+
+### `POST /agente/recomendar` (TP5)
+
+```json
+{"cidade": "Curitiba (PR)", "consumo_kwh_mes": 250, "tarifa": 0.92, "ligacao": "bifasica",
+ "objetivo": "Me preocupa o inverno: a geração cai muito?"}
+```
+
+Campos opcionais: `custo_kwp` (padrão 3000), `desempenho` (0,80), `potencia_kwp` (vazio = o
+agente dimensiona), `reajuste_tarifa` (0). A resposta traz `passos` (ação, quem decidiu,
+probabilidades de cada opção, observação e tempo), `resultados` (saída de cada ferramenta),
+`classificacao`, `alertas`, `recomendacao` (Markdown), `verificacao` dos números, `premissas`,
+`modelo` e `uso` (tokens, tempo, `decisoes_do_modelo`). Exemplo real completo em
+[evidencias/chamadas_reais_api.md](evidencias/chamadas_reais_api.md).
+
+### `POST /conversas/{id}/mensagens` (TP5)
+
+```json
+{"pergunta": "E em Fortaleza, como seria?", "k": 4}
+```
+
+Resposta: `pergunta_reescrita` (a pergunta completa usada na busca), `metodo_reescrita`
+(`original`, `modelo` ou `regra`), `resposta`, `fontes` (com `tipo` `simulacao`,
+`recomendacao`, `ficha_local`, `noticia` ou `ranking`), `memoria` (`fatos`, `resumo`,
+`turnos_na_janela`...) e `resumo_atualizado`.
