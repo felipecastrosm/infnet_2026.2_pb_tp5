@@ -1,6 +1,7 @@
 """Solar Viável: ponto de entrada do app Streamlit com múltiplas páginas.
 
-Define o menu de navegação (st.navigation) e o que é comum a todas as páginas:
+Define o menu de navegação (st.navigation), com o Painel (TP5) como página inicial, e o
+que é comum a todas as páginas:
 configuração, estado de sessão e conexão com a API FastAPI (src/api/main.py), de onde
 vêm todos os dados exibidos.
 """
@@ -27,22 +28,23 @@ ui.iniciar_sessao()
 ui.manter_parametros()
 
 paginas = {
-    "Projeto": [
-        st.Page("paginas/inicio.py", title="Início", icon=":material/home:", default=True),
-    ],
-    "Análises": [
-        st.Page("paginas/clima.py", title="Clima e geração", icon=":material/partly_cloudy_day:"),
-        st.Page("paginas/longo_prazo.py", title="Potencial de longo prazo", icon=":material/solar_power:"),
-        st.Page("paginas/noticias.py", title="Notícias do setor", icon=":material/newspaper:"),
-    ],
-    "Dados": [
-        st.Page("paginas/meus_dados.py", title="Meus dados", icon=":material/upload_file:"),
-        st.Page("paginas/api.py", title="Explorar a API", icon=":material/api:"),
+    "": [
+        st.Page("paginas/painel.py", title="Painel", icon=":material/dashboard:", default=True),
     ],
     "Inteligência artificial": [
         st.Page("paginas/assistente.py", title="Pergunte ao Solar Viável", icon=":material/forum:"),
         st.Page("paginas/processar_texto.py", title="Resumo e sentimento", icon=":material/summarize:"),
         st.Page("paginas/ia.py", title="Modelo local (LLM)", icon=":material/smart_toy:"),
+    ],
+    "Análises detalhadas": [
+        st.Page("paginas/clima.py", title="Clima e geração", icon=":material/partly_cloudy_day:"),
+        st.Page("paginas/longo_prazo.py", title="Potencial de longo prazo", icon=":material/solar_power:"),
+        st.Page("paginas/noticias.py", title="Notícias do setor", icon=":material/newspaper:"),
+    ],
+    "Dados e projeto": [
+        st.Page("paginas/meus_dados.py", title="Meus dados", icon=":material/upload_file:"),
+        st.Page("paginas/api.py", title="Explorar a API", icon=":material/api:"),
+        st.Page("paginas/inicio.py", title="Sobre o projeto", icon=":material/info:"),
     ],
 }
 

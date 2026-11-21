@@ -128,10 +128,13 @@ def dimensionar_sistema(
     ligacao: str = "bifasica",
     desempenho: float = 0.80,
     potencia_kwp: Optional[float] = None,
+    arredondar_modulos: bool = True,
 ) -> dict:
     """Potência para compensar o consumo (descontado o mínimo cobrado pela distribuidora).
 
-    Com `potencia_kwp`, usa a potência informada em vez de calcular.
+    Com `potencia_kwp`, usa a potência informada em vez de calcular. Com
+    `arredondar_modulos=False`, usa a potência exata (útil para comparar locais sem o
+    "degrau" de um módulo a mais ou a menos).
     """
     r = _ref(sundata, cidade)
     disponibilidade = DISPONIBILIDADE_KWH[ligacao]
@@ -142,10 +145,14 @@ def dimensionar_sistema(
         modulos = max(1, round(potencia_kwp / POTENCIA_MODULO_KWP))
         kwp = float(potencia_kwp)
         origem = "informada pelo usuário"
-    else:
+    elif arredondar_modulos:
         modulos = max(1, math.ceil(necessario / POTENCIA_MODULO_KWP - 1e-9))
         kwp = round(modulos * POTENCIA_MODULO_KWP, 2)
         origem = "calculada para compensar o consumo"
+    else:
+        kwp = round(necessario, 2)
+        modulos = max(1, math.ceil(necessario / POTENCIA_MODULO_KWP - 1e-9))
+        origem = "exata para compensar o consumo"
     geracao_ano = kwh_por_kwp_ano * kwp
     return {
         "potencia_kwp": kwp,
@@ -303,10 +310,14 @@ def comparar_capitais(
     desempenho: float = 0.80,
     cidade: Optional[str] = None,
 ) -> dict:
-    """O mesmo perfil de consumo nas 10 capitais: potência, payback e CO2 evitado."""
+    """O mesmo perfil de consumo nas 10 capitais: potência, payback e CO2 evitado.
+
+    Usa a potência exata (sem arredondar para módulos inteiros), para que a diferença entre
+    as capitais venha só do sol de cada uma.
+    """
     linhas = []
     for c in capitais(sundata):
-        dim = dimensionar_sistema(sundata, c, consumo_kwh_mes, ligacao, desempenho)
+        dim = dimensionar_sistema(sundata, c, consumo_kwh_mes, ligacao, desempenho, arredondar_modulos=False)
         fin = analise_financeira(dim, tarifa, custo_kwp)
         amb = impacto_ambiental(dim)
         pot = _ref(sundata, c)

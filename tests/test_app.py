@@ -11,6 +11,7 @@ from src.data_acquisition import nasa_power_client
 from src.data_processing import climate
 
 PAGINAS = [
+    "paginas/painel.py",
     "paginas/inicio.py",
     "paginas/clima.py",
     "paginas/longo_prazo.py",
