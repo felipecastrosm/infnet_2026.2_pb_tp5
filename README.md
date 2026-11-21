@@ -5,20 +5,38 @@ pequenos negócios no Brasil. Combina dados climáticos da
 [NASA POWER API](https://power.larc.nasa.gov/), a irradiação de longo prazo do
 [SunData (CRESESB/CEPEL)](https://cresesb.cepel.br/index.php?section=sundata), coletada com
 Selenium, notícias do setor extraídas com Beautiful Soup (ABSOLAR e Canal Solar), dados
-enviados pelo próprio usuário e, desde o TP4, um **modelo de linguagem (LLM) da HuggingFace
-executado localmente**, que resume e classifica notícias, responde dúvidas citando as fontes
-e escreve relatórios de viabilidade. Projeto acadêmico (Projeto de Bloco, Infnet), alinhado ao
-ODS 7 (Energia limpa e acessível) e ao ODS 13 (Ação contra a mudança global do clima).
+enviados pelo próprio usuário e um **modelo de linguagem (LLM) da HuggingFace executado
+localmente**. Na versão final (TP5), um **painel** reúne o ciclo completo: o usuário informa
+cidade, consumo e tarifa, um **agente de IA** escolhe as análises, calcula sobre os dados e
+recomenda se vale a pena instalar, e um **chat com memória** responde as dúvidas seguintes.
+Projeto acadêmico (Projeto de Bloco, Infnet), alinhado ao ODS 7 (Energia limpa e acessível) e
+ao ODS 13 (Ação contra a mudança global do clima).
 
 Iniciativas que inspiraram o projeto: Atlas Brasileiro de Energia Solar (INPE), SunData (CRESESB), Global Solar Atlas, PVWatts, PVGIS, ANEEL e ABSOLAR (links no app e no Project Charter, seção 9.1).
 
-Documentação: [Project Charter](docs/project/project_charter.md) ·
+Documentação: [Apresentação da solução (TP5)](docs/apresentacao_solucao.md) ·
+[Agente e memória (TP5)](docs/agente_e_memoria.md) ·
+[Chamadas reais com o modelo carregado](docs/evidencias/chamadas_reais_api.md) ·
+[Project Charter](docs/project/project_charter.md) ·
 [Data Summary Report](docs/data_report/data_summary_report.md) ·
 [API](docs/api.md) ·
 [Escolha do modelo LLM](docs/llm_escolha_modelo.md) ·
 [Integração local do LLM](docs/llm_integracao_local.md) ·
 [Planejamento de IA (TP3)](docs/llm_planejamento.md) ·
 [Metodologia (CRISP-DM x TDSP)](docs/methodology.md)
+
+## Novidades do TP5 (entrega final)
+
+| Requisito | Como foi atendido | Onde |
+|---|---|---|
+| Artefatos do TDSP completos | Charter: como dados, IA e engenharia de prompts resolvem o problema, técnicas de prompt, metas do TP5, resultados e impacto em ESG/ODS. Data Summary Report: notícias com IA, premissas com fonte e a **linhagem dos dados** da coleta ao painel | [Charter](docs/project/project_charter.md) (2.3, 2.4, 12), [DSR](docs/data_report/data_summary_report.md) (7.2 a 7.4, 11), [Metodologia](docs/methodology.md) |
+| Caminho escolhido: **agente inteligente** (Opção 3) + **memória conversacional** (Opção 1) | Agente: a cada passo o LLM escolhe (por decodificação restrita) uma de 7 ferramentas que calculam sobre os dados (dimensionamento, payback com Fio B, sazonalidade, CO₂, benchmark, notícias); depois escreve a recomendação, com os números conferidos. Memória: janela de 3 trocas, resumo pelo LLM, fatos lembrados e reescrita da pergunta com exemplos | `src/llm/agente.py`, `src/data_processing/viabilidade.py`, `src/llm/memoria.py`, [docs](docs/agente_e_memoria.md) |
+| Uso dos dados coletados pela IA | As 54 notícias resumidas e classificadas em lote pelo LLM; irradiação do CRESESB e da NASA em todas as ferramentas do agente; simulações calculadas na hora para o chat | `src/llm/enriquecer_noticias.py`, `data/processed/noticias_ia.csv` |
+| **Dashboard final** com IA | Painel (página inicial): as 5 etapas do ciclo com números; aba *Consultor com IA* (formulário de 3 campos, indicadores, recomendação, passos do agente, saldo em 25 anos, geração x consumo, benchmark, notícias e chat com memória); *Panorama das capitais*; *Setor solar com IA*; *Como funciona* | `paginas/painel.py`, telas em [docs/evidencias/telas](docs/evidencias/telas/) |
+| API | 9 rotas novas: `POST /agente/recomendar`, `/conversas` (criar, consultar, mensagem, apagar), `GET /painel`, `GET /noticias/ia` e outras; todas com Response Model | `src/api/main.py`, `src/api/schemas.py`, [docs/api.md](docs/api.md) |
+| Apresentação e argumentação | Problema, solução, ciclo, insights com dados reais, uso da IA, ESG/ODS e limitações | [docs/apresentacao_solucao.md](docs/apresentacao_solucao.md) |
+| **Feedback do TP4: chamada real com o modelo carregado** | Script que chama a API em execução com o Qwen3-1.7B carregado e salva requisições, respostas, tempos e tokens; telas do painel capturadas com o modelo real | `scripts/registrar_chamadas_reais.py`, [docs/evidencias/chamadas_reais_api.md](docs/evidencias/chamadas_reais_api.md), `scripts/capturar_telas.py` |
+| Testes | 116 testes (23 novos: ferramentas, decisões do agente, guardrails, verificação de números, memória, reescrita, persistência, painel) | `tests/test_tp5.py` |
 
 ## Novidades do TP4
 
@@ -39,7 +57,7 @@ Documentação: [Project Charter](docs/project/project_charter.md) ·
 | Múltiplas páginas com menu de navegação | 7 páginas em 4 seções (`st.navigation`); parâmetros da barra lateral preservados ao trocar de página | `app.py`, `paginas/`, `src/ui.py` |
 | API com FastAPI (GET e POST), documentada | 15 rotas: locais, clima, consulta ao vivo, longo prazo, estimativa, notícias, medições (POST/GET/DELETE) e LLM; Swagger em `/docs` | `src/api/`, [docs/api.md](docs/api.md) |
 | Aplicação integrada à API | O app não lê `data/` diretamente: todas as páginas consultam e enviam dados por HTTP; a página *Explorar a API* testa qualquer rota | `src/api_client.py`, `paginas/` |
-| Web scraping de página dinâmica (Selenium) | Preenche o formulário do SunData (envio por JavaScript) para as 10 capitais | `src/data_acquisition/cresesb_sundata.py` → `data/raw/cresesb_sundata_capitais.csv` |
+| Web scraping de página dinâmica (Selenium) | Preenche o formulário do SunData (envio por JavaScript) para as 10 capitais | `src/data_acquisition/cresesb_sundata.py`, salvo em `data/raw/cresesb_sundata_capitais.csv` |
 | Mais dados com Beautiful Soup | Texto completo, data e tags das matérias do Canal Solar; coletas acumuladas (54 notícias, 51 com texto) | `src/data_acquisition/canalsolar_scraper.py`, `absolar_scraper.py` |
 | Documentação atualizada | Charter (problema reavaliado, metas, escopo, riscos) e Data Summary Report (novas fontes) | `docs/` |
 | Preparação para LLM | Corpus em trechos + fichas de local, recuperação de contexto e prompt; plano dos casos de uso | `src/data_processing/llm_prep.py`, `paginas/ia.py`, [docs/llm_planejamento.md](docs/llm_planejamento.md) |
@@ -48,13 +66,14 @@ Documentação: [Project Charter](docs/project/project_charter.md) ·
 
 | Seção | Página | O que faz | Rotas da API |
 |---|---|---|---|
-| Projeto | Início | Problema, objetivo, arquitetura e inspirações | n/a |
+| (início) | **Painel (TP5)** | Ciclo de ciência de dados, consultor com IA (agente + chat com memória), panorama das capitais e setor solar com IA | `/painel`, `/agente/recomendar`, `/conversas`, `/noticias/ia`, `/irradiacao-longo-prazo` |
+| Dados e projeto | Sobre o projeto | Problema, objetivo, arquitetura e inspirações | n/a |
 | Análises | Clima e geração | Compara locais e períodos; estima geração e economia; consulta ao vivo | `/locais`, `/clima`, `/clima/ao-vivo` |
 | Análises | Potencial de longo prazo | Ano típico mês a mês, efeito da inclinação, NASA x CRESESB e **relatório de viabilidade gerado pelo LLM** | `/irradiacao-longo-prazo`, `/estimativa`, `/clima/resumo`, `/llm/relatorio` |
 | Análises | Notícias do setor | Nuvem de palavras, frequências, publicações por semana, manchetes, textos e **resumo + sentimento com o LLM** | `/noticias`, `/processar_texto` |
 | Dados | Meus dados | Envio de CSV ou medição avulsa, gestão das medições e downloads | `POST/GET/DELETE /medicoes` e outras |
 | Dados | Explorar a API | Lista as rotas (OpenAPI) e envia requisições | todas |
-| IA | Pergunte ao Solar Viável | Chat com o LLM local: respostas com base nas notícias e nos dados das capitais, com fontes citadas | `/llm/status`, `/llm/perguntar` |
+| IA | Pergunte ao Solar Viável | Chat **com memória** (TP5): entende "e em Manaus?", mostra a pergunta reescrita e o que lembra; fontes citadas | `/llm/status`, `/conversas` |
 | IA | Resumo e sentimento | Resumo ou sentimento de uma notícia coletada ou de um texto qualquer; mostra o JSON da resposta | `/llm/status`, `/noticias`, `/processar_texto` |
 | IA | Modelo local (LLM) | Estado do modelo (hardware, memória, limites), como a integração funciona, corpus e recuperação de contexto | `/llm/status`, `/llm/carregar`, `/llm/corpus`, `/llm/contexto` |
 
@@ -67,6 +86,9 @@ Documentação: [Project Charter](docs/project/project_charter.md) ·
 ├── requirements.txt / requirements-dev.txt
 ├── .streamlit/config.toml
 ├── docs/
+│   ├── apresentacao_solucao.md              # apresentação e argumentação da solução (TP5)
+│   ├── agente_e_memoria.md                  # agente consultor e memória conversacional (TP5)
+│   ├── evidencias/                          # chamadas reais com o modelo carregado e telas do painel (TP5)
 │   ├── api.md                               # rotas da API e formato dos erros
 │   ├── llm_escolha_modelo.md                # justificativa da escolha do modelo (TP4)
 │   ├── llm_integracao_local.md              # ambiente, bibliotecas, ajustes de hardware, erros (TP4)
@@ -81,13 +103,14 @@ Documentação: [Project Charter](docs/project/project_charter.md) ·
 │   └── avaliacao/                           # notícias rotuladas e perguntas para avaliar os modelos
 ├── src/
 │   ├── api/                                 # FastAPI: main.py (rotas e erros), schemas.py (Response Models)
-│   ├── llm/                                 # LLM local: config, erros, servico (Transformers), tarefas, avaliacao
+│   ├── llm/                                 # LLM local: servico, tarefas, agente e memoria (TP5), enriquecer_noticias (TP5)
 │   ├── api_client.py                        # cliente HTTP usado pelo app
 │   ├── repositorio.py                       # leitura/gravação dos arquivos de dados (usado pela API)
 │   ├── ui.py                                # funções comuns às páginas (cache, barra lateral)
 │   ├── locations.py                         # capitais usadas nas coletas
 │   ├── data_acquisition/                    # nasa_power_client, cresesb_sundata (Selenium), absolar_scraper, canalsolar_scraper
-│   └── data_processing/                     # climate.py, text.py, llm_prep.py
+│   └── data_processing/                     # climate.py, text.py, llm_prep.py, viabilidade.py (TP5)
+├── scripts/                                 # registrar_chamadas_reais.py e capturar_telas.py (TP5)
 └── tests/                                   # API, LLM (modelo falso), parsers (fixtures HTML) e páginas do app
 ```
 
@@ -136,12 +159,15 @@ python -m src.data_acquisition.absolar_scraper               # notícias + texto
 python -m src.data_acquisition.canalsolar_scraper            # notícias + texto completo (acumula)
 python -m src.data_processing.llm_prep                       # regera o corpus para LLM
 python -m src.llm.avaliacao                                  # compara os modelos candidatos (precisa deles no cache)
+python -m src.llm.enriquecer_noticias                        # TP5: resumo e sentimento das notícias novas, em lote
+python scripts/registrar_chamadas_reais.py                   # TP5: chamadas reais à API com o modelo (API no ar)
+python scripts/capturar_telas.py                             # TP5: telas do painel (API e app no ar)
 ```
 
 Testes:
 
 ```bash
-pytest                                       # 93 testes, sem precisar do modelo (usa um modelo falso)
+pytest                                       # 116 testes, sem precisar do modelo (usa um modelo falso)
 SOLAR_TESTAR_LLM=1 pytest -m llm             # teste de ponta a ponta com o modelo real
 ```
 
@@ -159,6 +185,6 @@ aponte `SOLAR_API_URL` para uma API rodando numa máquina com o modelo.
 ## Fluxo de Git
 
 Branch `main` estável, com commits pequenos e descritivos, um por parte da entrega. No
-TP4: base do TP3 → ambiente (Python 3.12, PyTorch, Transformers) → corpus com ranking →
-núcleo do LLM local → tarefas → rotas, Response Models e erros da API → páginas do app →
-comparação de modelos → documentação (`git log --oneline`).
+TP5: base do TP4, análise de viabilidade, notícias com IA em lote, agente consultor, memória
+conversacional, rotas da API e testes, painel, ajustes de memória, evidências com o modelo
+real (chamadas e telas) e documentação (`git log --oneline`).

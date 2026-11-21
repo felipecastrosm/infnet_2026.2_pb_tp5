@@ -116,7 +116,7 @@ curl -X POST http://127.0.0.1:8000/processar_texto -H "Content-Type: application
 | Variável | Padrão | Efeito |
 |---|---|---|
 | `SOLAR_LLM_MODELO` | `Qwen/Qwen3-1.7B` | modelo do Hub (ou uma pasta local com os arquivos do modelo) |
-| `SOLAR_LLM_DISPOSITIVO` | `auto` | `auto` escolhe CUDA → MPS → CPU; ou force `cuda`, `mps`, `cpu` |
+| `SOLAR_LLM_DISPOSITIVO` | `auto` | `auto` escolhe CUDA, depois MPS, depois CPU; ou force `cuda`, `mps`, `cpu` |
 | `SOLAR_LLM_DTYPE` | `auto` | `auto` = float16 na GPU (bfloat16 em CUDA que suporta), float32 na CPU |
 | `SOLAR_LLM_TIMEOUT_S` | 90 | prazo de uma geração; ao estourar, a geração para e a rota responde 504 |
 | `SOLAR_LLM_ESPERA_FILA_S` | 30 | tempo máximo esperando o modelo ficar livre; depois, 503 `modelo_ocupado` |
@@ -134,14 +134,14 @@ Exemplos: rodar um modelo menor numa máquina modesta
 
 | Ajuste | Onde | Por quê |
 |---|---|---|
-| **Escolha automática do dispositivo** (CUDA → MPS → CPU) | `servico.escolher_dispositivo` | o mesmo código roda em Mac, PC com GPU NVIDIA ou só CPU |
+| **Escolha automática do dispositivo** (CUDA, depois MPS, depois CPU) | `servico.escolher_dispositivo` | o mesmo código roda em Mac, PC com GPU NVIDIA ou só CPU |
 | **float16 na GPU, float32 na CPU** | `servico.escolher_dtype` | float16 usa metade da memória (1,7 B parâmetros ≈ 3,4 GB em vez de 6,8 GB) e é rápido na GPU; na CPU, float16 é lento ou sem suporte, então usa float32 |
 | **Carga em segundo plano** | `ServicoLLM.carregar_em_segundo_plano` + `lifespan` da API | a API sobe na hora; a carga (alguns segundos) não trava o servidor nem o app |
 | **Uma inferência por vez** (semáforo) | `ServicoLLM._executar` | duas gerações simultâneas no mesmo modelo dobrariam a memória e disputariam a GPU (no MPS, podem até falhar); as requisições esperam na fila até `SOLAR_LLM_ESPERA_FILA_S` |
 | **Prazo dentro da geração** | `_Prazo` (critério de parada do `generate`) | interrompe a geração no meio quando o tempo acaba, liberando a GPU de verdade (um timeout só no cliente deixaria o modelo trabalhando) |
 | **Limite de tokens de entrada** | `ServicoLLM.exigir_tamanho` | textos grandes aumentam memória e tempo de forma não linear; o limite protege a máquina e devolve 413 com explicação |
 | **Modo "raciocínio" desligado** | `apply_chat_template(..., enable_thinking=False)` | Qwen3 e SmolLM3 "pensam em voz alta" antes de responder; desligar reduz muito o tempo e os tokens, sem perda relevante nestas tarefas |
-| **Decodificação gulosa** (`do_sample=False`) e `repetition_penalty=1.1` | `BackendTransformers.gerar` | mesma entrada → mesma saída (respostas consistentes e testáveis) e menos laços de repetição, comuns em modelos pequenos |
+| **Decodificação gulosa** (`do_sample=False`) e `repetition_penalty=1.1` | `BackendTransformers.gerar` | mesma entrada, mesma saída (respostas consistentes e testáveis) e menos laços de repetição, comuns em modelos pequenos |
 | **`torch.inference_mode()`** | geração e pontuação | não guarda gradientes: menos memória e mais velocidade |
 | **Cache de respostas** (256 entradas) | `tarefas._CACHE` | a mesma pergunta/texto não executa o modelo de novo (`uso.em_cache=true`) |
 | **Falta de memória vira 503** | `ServicoLLM._executar` | `OutOfMemoryError` (CUDA) ou "MPS backend out of memory" viram `memoria_insuficiente`, com sugestão de usar texto menor ou modelo menor |

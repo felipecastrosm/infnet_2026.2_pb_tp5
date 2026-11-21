@@ -38,7 +38,7 @@ st.markdown(
     """
 | Etapa | Onde | O que acontece |
 |---|---|---|
-| Download (uma vez) | `hf download` → `~/.cache/huggingface` | os pesos do modelo vão para o disco; depois disso nada é baixado |
+| Download (uma vez) | `hf download` para `~/.cache/huggingface` | os pesos do modelo vão para o disco; depois disso nada é baixado |
 | Carga | `src/llm/servico.py` | ao subir a API, o modelo é carregado em segundo plano na GPU (CUDA ou Apple MPS) ou na CPU |
 | Requisição | `POST /processar_texto`, `/llm/perguntar`, `/llm/relatorio` | o Pydantic valida a entrada; o texto vira tokens e passa pelo modelo |
 | Inferência | `src/llm/tarefas.py` | resumo e respostas por geração gulosa (mesma entrada, mesma saída); sentimento pelas probabilidades de cada rótulo |

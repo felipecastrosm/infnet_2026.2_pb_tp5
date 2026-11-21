@@ -45,7 +45,7 @@ nem inventa valores, e toda resposta cita a fonte dos dados que usou.
 |---|---|---|
 | Coleta do **texto completo** das matérias (antes só manchetes no Canal Solar) | `src/data_acquisition/canalsolar_scraper.py` | Pronto |
 | Coletas acumuladas (o acervo cresce a cada execução) | scrapers ABSOLAR e Canal Solar | Pronto |
-| **Corpus em trechos** (≤ 220 palavras, 40 de sobreposição, título em cada trecho, com fonte, link e data) | `src/data_processing/llm_prep.py` → `data/processed/corpus_llm.jsonl` | 163 documentos |
+| **Corpus em trechos** (≤ 220 palavras, 40 de sobreposição, título em cada trecho, com fonte, link e data) | `src/data_processing/llm_prep.py`, salvo em `data/processed/corpus_llm.jsonl` | 163 documentos |
 | **Fichas de local**: números de clima e longo prazo convertidos em texto | `llm_prep.fichas_locais` | 10 fichas |
 | **Recuperador de linha de base** (palavras-chave com pesos TF-IDF) | `llm_prep.buscar` | Pronto (será trocado) |
 | **Modelo de prompt** para perguntas e respostas, com regras (português, só o contexto, citar [n], admitir quando não sabe) | `llm_prep.PROMPT_QA` | Pronto |
@@ -56,9 +56,9 @@ Exemplo real de **ficha de local** (gerada a partir dos dados):
 
 > Potencial solar da capital Curitiba (PR). Entre 17/10/2025 e 17/10/2026, a irradiação
 > solar média medida por satélite (NASA POWER) foi de 4,31 kWh/m² por dia (o mesmo que
-> horas de sol pleno por dia), […] Na base de longo prazo do CRESESB (estação Curitiba, a
+> horas de sol pleno por dia), [...] Na base de longo prazo do CRESESB (estação Curitiba, a
 > 3,9 km), com os painéis inclinados a 21° voltados para o norte, a irradiação média anual
-> é de 4,39 kWh/m²/dia, variando de 3,52 (jun) a 5,08 (dez). Um sistema de 5,0 kWp […]
+> é de 4,39 kWh/m²/dia, variando de 3,52 (jun) a 5,08 (dez). Um sistema de 5,0 kWp [...]
 > geraria cerca de 534 kWh por mês em média.
 
 ## 4. Casos de uso planejados
@@ -69,7 +69,7 @@ Exemplo real de **ficha de local** (gerada a partir dos dados):
 |---|---|
 | Pergunta de negócio | "Vale a pena colocar solar em Curitiba?", "O que é o leilão de baterias e me afeta?" |
 | Entrada | pergunta do usuário + `k` trechos recuperados do corpus (notícias + fichas) |
-| Fluxo | pergunta → recuperação (`/llm/contexto`) → prompt com contexto numerado → LLM → resposta com citações [n] e links |
+| Fluxo | pergunta, recuperação (`/llm/contexto`), prompt com contexto numerado, LLM e resposta com citações [n] e links |
 | Saída | resposta curta em português + lista de fontes |
 | Rota planejada | `POST /llm/perguntar` · página nova *Pergunte ao Solar Viável* (chat com `st.chat_input`) |
 | Avaliação | conjunto de ~20 perguntas com resposta esperada: acerto do recuperador (o trecho certo está entre os `k`?), fidelidade (a resposta usa só o contexto?), clareza para leigos |

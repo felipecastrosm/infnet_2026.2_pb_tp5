@@ -20,21 +20,23 @@ st.write(
     "por notícias do setor, por dados que o próprio usuário pode enviar e, desde o TP4, por um "
     "**modelo de linguagem local** que explica os números, resume notícias e responde dúvidas. Alinhado ao "
     "**ODS 7 (Energia limpa e acessível)** e, secundariamente, ao **ODS 13 (Ação contra a "
-    "mudança global do clima)**."
+    "mudança global do clima)**. Na versão final (TP5), um **agente de IA** escolhe as análises e recomenda se vale a pena "
+    "instalar, e um **chat com memória** responde as dúvidas seguintes."
 )
 
 st.header("Como usar")
+st.page_link("paginas/painel.py", label="**Painel (comece por aqui)**: o agente de IA analisa sua cidade e seu consumo e recomenda; depois, converse sobre o resultado", icon=":material/dashboard:")
 st.page_link("paginas/clima.py", label="**Clima e geração**: compare locais no último ano e estime a geração", icon=":material/partly_cloudy_day:")
 st.page_link("paginas/longo_prazo.py", label="**Potencial de longo prazo**: médias mensais históricas e painel inclinado", icon=":material/solar_power:")
 st.page_link("paginas/noticias.py", label="**Notícias do setor**: nuvem de palavras, estatísticas e manchetes", icon=":material/newspaper:")
 st.page_link("paginas/meus_dados.py", label="**Meus dados**: envie suas medições (POST na API) e baixe os dados", icon=":material/upload_file:")
 st.page_link("paginas/api.py", label="**Explorar a API**: teste as rotas da API FastAPI pelo navegador", icon=":material/api:")
-st.page_link("paginas/assistente.py", label="**Pergunte ao Solar Viável**: chat com o modelo local, com as fontes citadas", icon=":material/forum:")
+st.page_link("paginas/assistente.py", label="**Pergunte ao Solar Viável**: chat com memória, com as fontes citadas", icon=":material/forum:")
 st.page_link("paginas/processar_texto.py", label="**Resumo e sentimento**: o modelo local resume ou classifica um texto ou notícia", icon=":material/summarize:")
 st.page_link("paginas/ia.py", label="**Modelo local (LLM)**: estado do modelo, integração e recuperação de contexto", icon=":material/smart_toy:")
 st.caption("Use o menu à esquerda para navegar. Locais, período e sistema fotovoltaico ficam na barra lateral das páginas de análise.")
 
-st.header("Arquitetura (TP4)")
+st.header("Arquitetura")
 st.write(
     "Os dados são coletados por scripts independentes e servidos por uma **API FastAPI**. "
     "O app Streamlit consome essa API por HTTP, tanto para consultar (GET) quanto para "

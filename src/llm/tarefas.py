@@ -14,7 +14,7 @@ os Response Models de `src/api/schemas.py`.
 Princípio mantido desde o TP3: **os números vêm da API**. O modelo explica e resume;
 no relatório, cada número do texto é conferido contra os dados de entrada.
 
-Os resultados ficam em um cache em memória (mesma entrada → mesma resposta, sem
+Os resultados ficam em um cache em memória (mesma entrada, mesma resposta, sem
 executar o modelo de novo).
 """
 
