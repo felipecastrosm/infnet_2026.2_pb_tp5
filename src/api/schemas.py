@@ -369,3 +369,169 @@ class RespostaRelatorio(BaseModel):
     estimativa: Estimativa = Field(description="os números de origem (GET /estimativa)")
     modelo: InfoModelo
     uso: UsoModelo
+
+
+# ---------------------------------------------------------------------------
+# TP5: agente consultor (decisão com ferramentas)
+# ---------------------------------------------------------------------------
+class PedidoAgente(BaseModel):
+    cidade: str = Field(min_length=2, max_length=80, description="uma das 10 capitais (GET /locais)")
+    consumo_kwh_mes: float = Field(gt=0, le=20000, description="consumo médio mensal na conta de luz, em kWh")
+    tarifa: float = Field(0.95, gt=0, le=5, description="tarifa com impostos, em R$/kWh")
+    ligacao: Literal["monofasica", "bifasica", "trifasica"] = Field("bifasica", description="tipo de ligação (define o consumo mínimo cobrado)")
+    custo_kwp: float = Field(3000.0, ge=1000, le=15000, description="custo de instalação, em R$ por kWp")
+    desempenho: float = Field(0.80, ge=0.5, le=0.95, description="taxa de desempenho (perdas)")
+    potencia_kwp: Optional[float] = Field(None, gt=0, le=1000, description="vazio = o agente dimensiona pelo consumo")
+    reajuste_tarifa: float = Field(0.0, ge=0, le=0.2, description="reajuste anual da tarifa (0,05 = 5% ao ano)")
+    objetivo: str = Field("", max_length=400, description="o que o usuário quer saber, em texto livre (opcional)")
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "cidade": "Recife (PE)",
+                    "consumo_kwh_mes": 350,
+                    "tarifa": 0.95,
+                    "objetivo": "Quero saber em quanto tempo o investimento se paga e o impacto ambiental",
+                }
+            ]
+        }
+    }
+
+
+class DecisaoAgente(BaseModel):
+    modo: Literal["modelo", "regra"] = Field(description="modelo = escolhida pelo LLM; regra = única ação possível")
+    motivo: str
+    probabilidades: Dict[str, float] = Field(description="probabilidade que o LLM deu a cada ação disponível")
+
+
+class PassoAgente(BaseModel):
+    n: int
+    acao: str = Field(description="ferramenta executada (ou finalizar)")
+    titulo: str
+    decisao: DecisaoAgente
+    resumo: str = Field(description="observação: o resultado da ferramenta em uma frase")
+    tempo_s: float
+
+
+class RespostaAgente(BaseModel):
+    id: str = Field(description="identificador da recomendação (use em POST /conversas para conversar sobre ela)")
+    criado_em: str
+    perfil: dict
+    objetivo: str
+    passos: List[PassoAgente]
+    resultados: Dict[str, dict] = Field(description="saída completa de cada ferramenta executada")
+    classificacao: Literal["excelente", "boa", "moderada", "baixa"]
+    alertas: List[str] = Field(description="alertas gerados por regras (benchmarks)")
+    recomendacao: str = Field(description="recomendação em Markdown, escrita pelo LLM")
+    verificacao: VerificacaoNumeros
+    premissas: dict
+    modelo: InfoModelo
+    uso: UsoModelo
+
+
+class FerramentaAgente(BaseModel):
+    nome: str
+    titulo: str
+    descricao: str
+    depende_de: List[str]
+    obrigatoria: bool
+
+
+# ---------------------------------------------------------------------------
+# TP5: conversa com memória
+# ---------------------------------------------------------------------------
+class PedidoConversa(BaseModel):
+    recomendacao_id: Optional[str] = Field(None, description="id de uma recomendação do agente para conversar sobre ela")
+
+
+class EstadoMemoria(BaseModel):
+    fatos: dict = Field(description="cidade, consumo, potência e tarifa lembrados da conversa")
+    resumo: str = Field(description="resumo das trocas que saíram da janela (escrito pelo LLM)")
+    total_turnos: int
+    turnos_na_janela: int = Field(description="trocas enviadas na íntegra ao modelo")
+    turnos_resumidos: int
+    tamanho_janela: int
+    recomendacao_id: Optional[str] = None
+
+
+class TurnoConversa(BaseModel):
+    pergunta: str
+    resposta: str
+    pergunta_reescrita: str
+    fontes: List[FonteCitada]
+    criado_em: str
+
+
+class Conversa(BaseModel):
+    id: str
+    criada_em: str
+    atualizada_em: str
+    turnos: List[TurnoConversa]
+    memoria: EstadoMemoria
+
+
+class RemocaoConversa(BaseModel):
+    id: str
+    apagada: bool
+
+
+class PedidoMensagem(BaseModel):
+    pergunta: str = Field(min_length=2, max_length=500)
+    k: int = Field(4, ge=1, le=8, description="quantos trechos do corpus enviar ao modelo")
+
+    @field_validator("pergunta")
+    @classmethod
+    def _pergunta_com_palavras(cls, valor: str) -> str:
+        # perguntas de acompanhamento são curtas ("E em Manaus?"); basta uma palavra
+        valor = re.sub(r"\s+", " ", valor).strip()
+        if not re.search(r"[A-Za-zÀ-ÿ]{2,}", valor):
+            raise ValueError("a pergunta precisa ter ao menos uma palavra")
+        return valor
+
+    model_config = {"json_schema_extra": {"examples": [{"pergunta": "E em Manaus?", "k": 4}]}}
+
+
+class RespostaMensagem(BaseModel):
+    conversa_id: str
+    pergunta: str
+    pergunta_reescrita: str = Field(description="a pergunta completa usada na busca de contexto")
+    metodo_reescrita: Literal["original", "modelo", "regra"]
+    resposta: str
+    fontes: List[FonteCitada]
+    memoria: EstadoMemoria
+    resumo_atualizado: bool = Field(description="true se esta troca fez o LLM atualizar o resumo da conversa")
+    modelo: InfoModelo
+    uso: UsoModelo
+
+
+# ---------------------------------------------------------------------------
+# TP5: painel (ciclo de ciência de dados e insights)
+# ---------------------------------------------------------------------------
+class EtapaCiclo(BaseModel):
+    etapa: str
+    descricao: str
+    indicadores: Dict[str, Union[int, float, str]]
+
+
+class NoticiaIA(BaseModel):
+    titulo: str
+    fonte: str
+    data: str
+    url: str
+    resumo_ia: str
+    sentimento: Literal["positivo", "neutro", "negativo"]
+    confianca: float
+    justificativa: Optional[str] = None
+
+
+class Painel(BaseModel):
+    ciclo: List[EtapaCiclo]
+    capitais: List[dict] = Field(description="benchmark das capitais para o perfil informado")
+    perfil: dict
+    sentimento_noticias: Dict[str, int]
+    sentimento_por_fonte: List[dict]
+    sentimento_por_mes: List[dict]
+    noticias_processadas: int
+    modelo_noticias: Optional[str] = None
+    premissas: dict

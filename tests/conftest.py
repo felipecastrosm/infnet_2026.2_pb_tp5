@@ -19,6 +19,7 @@ import pytest
 
 _tmp = Path(tempfile.mkdtemp(prefix="solar_viavel_testes_"))
 os.environ["SOLAR_MEDICOES_CSV"] = str(_tmp / "medicoes.csv")
+os.environ["SOLAR_CONVERSAS_DIR"] = str(_tmp / "conversas")
 os.environ["SOLAR_LLM_CARREGAR"] = "0"
 os.environ.pop("SOLAR_LLM_DESATIVADO", None)
 
@@ -57,13 +58,14 @@ class BackendFalso:
         self.chamadas.append(("pontuar", mensagens))
         if self.erro:
             raise self.erro
-        return {r: self.probabilidades[r] for r in opcoes}
+        # rótulos que o teste não definiu (ex.: nomes de ferramentas do agente) ficam com probabilidade baixa
+        return {r: self.probabilidades.get(r, 0.01) for r in opcoes}
 
 
 @pytest.fixture
 def llm():
     """Coloca o serviço de LLM em estado "pronto" com um backend falso; devolve (serviço, backend)."""
-    from src.llm import tarefas
+    from src.llm import agente, memoria, tarefas
     from src.llm.servico import servico
 
     s = servico()
@@ -71,10 +73,14 @@ def llm():
     backend = BackendFalso()
     s.usar_backend(backend)
     tarefas.limpar_cache()
+    agente.limpar()
+    memoria.repositorio_conversas().limpar()
     yield s, backend
     s.config = config_original
     s.usar_backend(None)
     tarefas.limpar_cache()
+    agente.limpar()
+    memoria.repositorio_conversas().limpar()
 
 
 @pytest.fixture

@@ -32,9 +32,9 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from src import repositorio
 from src.api import schemas
 from src.data_acquisition import nasa_power_client
-from src.data_processing import climate, llm_prep, text
+from src.data_processing import climate, llm_prep, text, viabilidade
+from src.llm import agente, memoria, tarefas
 from src.llm import erros as erros_llm
-from src.llm import tarefas
 from src.llm.servico import servico as servico_llm
 
 log = logging.getLogger("solar_viavel.api")
@@ -54,6 +54,12 @@ fotovoltaica de residências e pequenos negócios no Brasil (ODS 7).
   (`POST /processar_texto`), perguntas e respostas sobre as notícias e fichas das capitais
   com citação das fontes (`POST /llm/perguntar`) e relatório de viabilidade cujos números
   são conferidos com a API (`POST /llm/relatorio`). Estado do modelo em `GET /llm/status`.
+* **Agente consultor (TP5)**: o LLM escolhe, passo a passo, quais análises rodar
+  (potencial, dimensionamento, finanças, sazonalidade, CO2, benchmark, notícias) e escreve
+  uma recomendação com números conferidos (`POST /agente/recomendar`).
+* **Conversa com memória (TP5)**: perguntas de acompanhamento ("e em Manaus?") entendidas
+  pelo contexto, com janela recente, resumo e fatos lembrados (`/conversas`).
+* **Painel (TP5)**: indicadores do ciclo de ciência de dados e insights (`GET /painel`).
 
 **Erros**: todos no formato `RespostaErro` (`status`, `erro`, `mensagem`, `sugestao`,
 `detalhes`). Principais códigos: 404 (local inexistente), 409 (conflito), 413 (texto
@@ -70,6 +76,9 @@ TAGS = [
     {"name": "Medições do usuário", "description": "Envio e gestão de dados próprios."},
     {"name": "Processamento de texto (LLM)", "description": "Resumo e sentimento com o LLM local."},
     {"name": "LLM", "description": "Estado do modelo local, perguntas e respostas (RAG) e relatório de viabilidade."},
+    {"name": "Agente consultor (TP5)", "description": "Agente que escolhe as análises com o LLM e recomenda uma ação."},
+    {"name": "Conversa com memória (TP5)", "description": "Chat que lembra o contexto entre as perguntas."},
+    {"name": "Painel (TP5)", "description": "Dados do dashboard: ciclo de ciência de dados, benchmark das capitais e notícias com IA."},
 ]
 
 
@@ -214,6 +223,15 @@ def _noticias() -> pd.DataFrame:
 @lru_cache(maxsize=1)
 def _corpus() -> pd.DataFrame:
     return repositorio.carregar_corpus_llm()
+
+
+@lru_cache(maxsize=1)
+def _noticias_ia() -> pd.DataFrame:
+    return repositorio.carregar_noticias_ia()
+
+
+def _dados_agente() -> agente.DadosAgente:
+    return agente.DadosAgente(sundata=_sundata(), clima=_clima_base(), noticias_ia=_noticias_ia())
 
 
 def _clima(incluir_medicoes: bool = True) -> pd.DataFrame:
@@ -507,7 +525,13 @@ def contexto_llm(pergunta: str = Query(..., min_length=3), k: int = Query(4, ge=
 # ---------------------------------------------------------------------------
 # LLM local (HuggingFace Transformers)
 # ---------------------------------------------------------------------------
-ROTAS_LLM = ["POST /processar_texto", "POST /llm/perguntar", "POST /llm/relatorio"]
+ROTAS_LLM = [
+    "POST /processar_texto",
+    "POST /llm/perguntar",
+    "POST /llm/relatorio",
+    "POST /agente/recomendar",
+    "POST /conversas/{id}/mensagens",
+]
 
 
 @app.get("/llm/status", response_model=schemas.StatusLLM, tags=["LLM"], summary="Estado do modelo local")
@@ -627,3 +651,213 @@ def relatorio(pedido: schemas.PedidoRelatorio):
         "modelo": llm.info_modelo(),
         "uso": _uso(saida["uso"], saida["em_cache"]),
     }
+
+
+# ---------------------------------------------------------------------------
+# TP5: agente consultor
+# ---------------------------------------------------------------------------
+@app.get("/agente/ferramentas", response_model=List[schemas.FerramentaAgente], tags=["Agente consultor (TP5)"], summary="Ferramentas do agente")
+def ferramentas_agente():
+    """As ações que o agente pode escolher, com as dependências entre elas (guardrails)."""
+    return agente.ferramentas_publicas()
+
+
+@app.post(
+    "/agente/recomendar",
+    response_model=schemas.RespostaAgente,
+    responses={**ERROS_LLM, **ERRO_404},
+    tags=["Agente consultor (TP5)"],
+    summary="Analisa o caso do usuário e recomenda uma ação",
+)
+def recomendar(pedido: schemas.PedidoAgente):
+    """Executa o agente: a cada passo o LLM local escolhe a próxima análise (pela probabilidade
+    de cada ação), a ferramenta calcula sobre os dados coletados e o resultado vira uma
+    observação. No fim, o LLM escreve a recomendação e cada número do texto é conferido.
+
+    A resposta traz os passos (com as probabilidades de cada decisão), os resultados de cada
+    ferramenta, os alertas por regras, a recomendação e o `id` para conversar sobre ela."""
+    llm = servico_llm()
+    llm.info_modelo()
+    perfil = pedido.model_dump(exclude={"objetivo"})
+    try:
+        saida = agente.executar(llm, _dados_agente(), perfil, pedido.objetivo)
+    except KeyError:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, f"Sem dados de longo prazo para '{pedido.cidade}'. Use uma das capitais de GET /locais."
+        )
+    return {**saida, "modelo": llm.info_modelo(), "uso": _uso(saida["uso"], saida["em_cache"])}
+
+
+@app.get(
+    "/agente/recomendacoes/{id_}",
+    response_model=schemas.RespostaAgente,
+    responses={404: {"model": schemas.RespostaErro, "description": "Recomendação não encontrada"}},
+    tags=["Agente consultor (TP5)"],
+    summary="Consulta uma recomendação já feita",
+)
+def obter_recomendacao(id_: str):
+    rec = agente.obter_recomendacao(id_)
+    if rec is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Recomendação '{id_}' não encontrada.")
+    llm = servico_llm()
+    return {**rec, "modelo": {**llm.info_modelo()}, "uso": _uso(rec["uso"], True)}
+
+
+# ---------------------------------------------------------------------------
+# TP5: conversa com memória
+# ---------------------------------------------------------------------------
+ERRO_CONVERSA = {404: {"model": schemas.RespostaErro, "description": "Conversa não encontrada"}}
+
+
+@app.post(
+    "/conversas",
+    response_model=schemas.Conversa,
+    status_code=status.HTTP_201_CREATED,
+    responses={404: {"model": schemas.RespostaErro, "description": "Recomendação não encontrada"}},
+    tags=["Conversa com memória (TP5)"],
+    summary="Inicia uma conversa (opcionalmente sobre uma recomendação do agente)",
+)
+def criar_conversa(pedido: Optional[schemas.PedidoConversa] = None):
+    rec = None
+    if pedido and pedido.recomendacao_id:
+        rec = agente.obter_recomendacao(pedido.recomendacao_id)
+        if rec is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, f"Recomendação '{pedido.recomendacao_id}' não encontrada.")
+    return memoria.repositorio_conversas().criar(rec).publico()
+
+
+@app.get("/conversas/{id_}", response_model=schemas.Conversa, responses=ERRO_CONVERSA, tags=["Conversa com memória (TP5)"], summary="Histórico e memória de uma conversa")
+def obter_conversa(id_: str):
+    return memoria.repositorio_conversas().obter(id_).publico()
+
+
+@app.delete("/conversas/{id_}", response_model=schemas.RemocaoConversa, responses=ERRO_CONVERSA, tags=["Conversa com memória (TP5)"], summary="Apaga uma conversa")
+def apagar_conversa(id_: str):
+    """Apaga o histórico e a memória (da API e do disco)."""
+    memoria.repositorio_conversas().apagar(id_)
+    return {"id": id_, "apagada": True}
+
+
+@app.post(
+    "/conversas/{id_}/mensagens",
+    response_model=schemas.RespostaMensagem,
+    responses={**ERROS_LLM, **ERRO_CONVERSA},
+    tags=["Conversa com memória (TP5)"],
+    summary="Envia uma pergunta e recebe a resposta, usando a memória da conversa",
+)
+def enviar_mensagem(id_: str, pedido: schemas.PedidoMensagem):
+    """A pergunta é reescrita com a memória (ex.: "e em Manaus?" vira uma pergunta completa),
+    os trechos são buscados com a pergunta reescrita e o modelo responde vendo as últimas
+    trocas, o resumo das anteriores e os fatos lembrados. A resposta mostra o estado da memória."""
+    repo = memoria.repositorio_conversas()
+    conversa = repo.obter(id_)
+    llm = servico_llm()
+    llm.info_modelo()
+    saida = memoria.conversar(llm, _corpus(), conversa, pedido.pergunta, pedido.k)
+    repo.atualizar(conversa)
+    return {
+        **saida,
+        "conversa_id": conversa.id,
+        "memoria": memoria.estado_memoria(conversa),
+        "modelo": llm.info_modelo(),
+        "uso": _uso(saida["uso"], False),
+    }
+
+
+# ---------------------------------------------------------------------------
+# TP5: painel
+# ---------------------------------------------------------------------------
+@app.get("/painel", response_model=schemas.Painel, tags=["Painel (TP5)"], summary="Indicadores do ciclo de ciência de dados e insights")
+def painel(
+    consumo_kwh_mes: float = Query(300, gt=0, le=20000),
+    tarifa: float = Query(0.95, gt=0, le=5),
+    custo_kwp: float = Query(viabilidade.CUSTO_KWP_PADRAO, ge=1000, le=15000),
+):
+    """Tudo que o painel do app mostra de uma vez: quanto dado foi coletado e processado em
+    cada etapa, o benchmark das capitais para o perfil informado e o sentimento das notícias
+    classificado pelo LLM."""
+    clima, sundata, noticias, corpus, nia = _clima_base(), _sundata(), _noticias(), _corpus(), _noticias_ia()
+    ausentes = float(clima["ALLSKY_SFC_SW_DWN"].isna().mean() * 100)
+    llm = servico_llm()
+    ciclo = [
+        {
+            "etapa": "Coleta",
+            "descricao": "API REST da NASA POWER, Selenium no SunData (CRESESB) e Beautiful Soup na ABSOLAR e no Canal Solar",
+            "indicadores": {
+                "fontes": 4,
+                "dias_de_clima": int(clima["date"].nunique()),
+                "registros_nasa": len(clima),
+                "capitais": int(clima["cidade"].nunique()),
+                "series_cresesb": len(sundata),
+                "noticias": len(noticias),
+            },
+        },
+        {
+            "etapa": "Processamento",
+            "descricao": "limpeza (-999 vira ausente), padronização, trechos de texto, fichas das capitais e ranking",
+            "indicadores": {
+                "ausentes_irradiacao_pct": round(ausentes, 1),
+                "documentos_corpus": len(corpus),
+                "palavras_corpus": int(corpus["n_palavras"].sum()) if len(corpus) else 0,
+            },
+        },
+        {
+            "etapa": "Análise",
+            "descricao": "geração mês a mês, dimensionamento, payback com Fio B, CO2 evitado e benchmark das capitais",
+            "indicadores": {"capitais_comparadas": len(viabilidade.capitais(sundata)), "ferramentas_do_agente": len(agente.FERRAMENTAS)},
+        },
+        {
+            "etapa": "IA",
+            "descricao": "LLM local: resumo e sentimento das notícias, agente que decide as análises e chat com memória",
+            "indicadores": {
+                "noticias_classificadas": len(nia),
+                "modelo": llm.config.modelo,
+                "estado_modelo": llm.estado.value,
+            },
+        },
+        {
+            "etapa": "Apresentação",
+            "descricao": "painel Streamlit consumindo a API FastAPI, com recomendações, gráficos e conversa",
+            "indicadores": {"rotas_api": len([r for r in app.routes if getattr(r, "include_in_schema", False)])},
+        },
+    ]
+    bench = viabilidade.comparar_capitais(sundata, consumo_kwh_mes, tarifa, custo_kwp)
+    por_fonte, por_mes = [], []
+    if len(nia):
+        por_fonte = nia.groupby(["fonte", "sentimento"]).size().reset_index(name="noticias").to_dict(orient="records")
+        mes = nia.dropna(subset=["data"]).assign(mes=lambda d: d["data"].dt.strftime("%Y-%m"))
+        por_mes = mes.groupby(["mes", "sentimento"]).size().reset_index(name="noticias").to_dict(orient="records")
+    return {
+        "ciclo": ciclo,
+        "capitais": bench["capitais"],
+        "perfil": {"consumo_kwh_mes": consumo_kwh_mes, "tarifa": tarifa, "custo_kwp": custo_kwp},
+        "sentimento_noticias": nia["sentimento"].value_counts().to_dict() if len(nia) else {},
+        "sentimento_por_fonte": por_fonte,
+        "sentimento_por_mes": por_mes,
+        "noticias_processadas": len(nia),
+        "modelo_noticias": str(nia["modelo"].iloc[0]) if len(nia) else None,
+        "premissas": viabilidade.PREMISSAS,
+    }
+
+
+@app.get("/noticias/ia", response_model=List[schemas.NoticiaIA], tags=["Notícias"], summary="Notícias resumidas e classificadas pelo LLM")
+def noticias_ia(sentimento: Optional[Literal["positivo", "neutro", "negativo"]] = None, limite: int = Query(100, ge=1, le=500)):
+    """Resultado do processamento em lote (`python -m src.llm.enriquecer_noticias`): resumo de cada
+    notícia e sentimento do ponto de vista de quem quer instalar energia solar."""
+    df = _noticias_ia()
+    if sentimento:
+        df = df[df["sentimento"] == sentimento]
+    df = df.sort_values("data", ascending=False).head(limite)
+    return [
+        {
+            "titulo": r.titulo,
+            "fonte": r.fonte,
+            "data": r.data.strftime("%Y-%m-%d") if pd.notna(r.data) else "",
+            "url": r.url,
+            "resumo_ia": r.resumo_ia,
+            "sentimento": r.sentimento,
+            "confianca": float(r.confianca),
+            "justificativa": r.justificativa or None,
+        }
+        for r in df.itertuples()
+    ]
