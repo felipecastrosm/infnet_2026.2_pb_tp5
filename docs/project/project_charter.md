@@ -1,7 +1,13 @@
 # Project Charter: Solar Viável
 
-**Versão:** TP4 (revisão do TP3) · **Autor:** Felipe Castro Sotto Mayor · **Disciplina:** Projeto de Bloco, Data Science e IA (Infnet)
+**Versão:** TP5, final (revisão do TP4) · **Autor:** Felipe Castro Sotto Mayor · **Disciplina:** Projeto de Bloco, Data Science e IA (Infnet)
 
+> **O que mudou no TP5:** a solução foi consolidada em um **painel** com um **agente
+> consultor** (o LLM escolhe as análises e escreve a recomendação) e um **chat com memória**.
+> Novas seções 2.3 (como dados, IA e engenharia de prompts resolvem o problema) e 2.4
+> (técnicas de engenharia de prompts), objetivos 13 a 16, coluna TP5 nas metas, escopo,
+> riscos e cronograma atualizados, e a seção 12 (resultados e impacto em ESG e ODS).
+>
 > **O que mudou no TP4:** integração de um LLM executado localmente (seção 2.2), objetivos
 > 10 a 12, novas metas na seção 4 (coluna TP4), escopo, riscos e cronograma atualizados.
 >
@@ -59,6 +65,50 @@ instalar solar; e redigir um relatório de viabilidade em linguagem simples, cuj
 são conferidos com a API. A escolha do modelo foi feita medindo candidatos nas tarefas do
 próprio projeto ([Escolha do modelo](../llm_escolha_modelo.md)).
 
+### 2.3 Como dados, IA e engenharia de prompts resolvem o problema (TP5)
+
+O problema de negócio é uma **decisão**: instalar ou não, de que tamanho, com que retorno.
+Até o TP4 o app entregava as peças (gráficos, estimativas, um chat, um relatório), mas o
+usuário leigo ainda precisava juntá-las. O TP5 entrega a decisão pronta e explicada, em
+uma tela, usando cada etapa do ciclo de ciência de dados:
+
+| Etapa | O que faz pela decisão do usuário |
+|---|---|
+| **Coleta** (NASA por API, CRESESB por Selenium, notícias por Beautiful Soup) | Dados reais e neutros sobre o sol de cada capital e sobre o que acontece no setor (tarifas, regras, custos), em vez da estimativa de quem vende o sistema |
+| **Processamento** | Séries limpas, ano típico por mês e plano inclinado, corpus de notícias em trechos e fichas das capitais em texto |
+| **Análise** | Dimensionamento, investimento, payback com o Fio B da Lei 14.300, sazonalidade, CO₂ evitado e benchmark entre capitais: os números da decisão |
+| **IA (LLM local)** | O **agente** escolhe quais análises importam para o objetivo do usuário e transforma os números em uma recomendação em português simples; o LLM também resume e classifica as notícias; o **chat com memória** responde as dúvidas seguintes sem o usuário repetir o contexto |
+| **Apresentação** | Um painel em que o usuário digita 3 campos, recebe veredito, indicadores, gráficos e o raciocínio do agente, e continua conversando |
+
+**Por que IA aqui, e não só gráficos.** O público-alvo não sabe o que é kWp, irradiação ou
+Fio B. O LLM é a camada que traduz os dados para a pergunta real ("vale a pena para mim?").
+Mas o modelo local é pequeno e erra contas e comparações; por isso a arquitetura separa
+papéis: **os dados e as ferramentas calculam, o modelo decide e explica**, e cada número do
+texto é conferido. Essa divisão é o que torna a IA confiável o suficiente para uma decisão
+financeira.
+
+**Por que um modelo local (e não uma API online).** Consumo e conta de luz são dados do
+usuário que não saem da máquina; não há custo por pergunta (o painel pode ser usado à
+vontade); funciona sem internet depois do download. O custo é um modelo menor, compensado
+pela engenharia de prompts (seção 2.4) e pela separação entre cálculo e linguagem.
+
+### 2.4 Técnicas de engenharia de prompts usadas (TP4 e TP5)
+
+| Técnica | Onde | Problema que resolve |
+|---|---|---|
+| Papel e regras no prompt de sistema ("use SOMENTE os fatos", "copie os números", "não faça contas") | todas as tarefas | Reduz invenção de números e de informações |
+| **Fatos pré-calculados** no prompt (o modelo recebe frases prontas das ferramentas) | agente, relatório | O modelo pequeno não precisa calcular; só explicar |
+| **Rótulos qualitativos calculados** ("entre os mais baixos das capitais") | agente | Evita que o modelo chame de "alto" um potencial que é baixo |
+| **Decodificação restrita** por log-probabilidade dos rótulos | decisão do agente, sentimento | A saída é sempre uma ação ou rótulo válido, com confiança; nada de JSON quebrado |
+| Recuperação de contexto (RAG) com trechos numerados e **citação obrigatória [n]** | chat | Respostas rastreáveis às fontes coletadas |
+| **Few-shot** (3 exemplos de reescrita) | memória | O modelo de 1,7 B passou a reescrever "qual delas tem mais sol?" como "entre Curitiba e Fortaleza, qual tem mais sol?" |
+| **Memória em camadas** (janela de 3 trocas, resumo pelo LLM, fatos por regras) | chat | Contexto longo sem estourar a janela do modelo |
+| **Contexto calculado na hora** (simulação para a cidade e a potência lembradas; comparação pronta) | chat | Evita que o modelo reaproveite números de outra cidade ou compare errado |
+| Formato de saída explícito (seções Markdown, limite de frases) | agente, relatório, resumo | Texto curto e escaneável no painel |
+| Ponto de vista no prompt ("para quem quer instalar"; "não marque positivo só porque o tema é solar") | sentimento | Classificação útil para a decisão, não o tom genérico |
+| **Verificação pós-geração** dos números | agente, relatório | Avisa o usuário se algum número do texto não veio dos cálculos |
+| Raciocínio desligado (`enable_thinking=False`) e decodificação gulosa | todas | Respostas rápidas e reprodutíveis |
+
 ## 3. Objetivos
 
 **Objetivo geral.** Oferecer um app e uma API que traduzam dados de irradiância e clima
@@ -79,25 +129,32 @@ acessível e com contexto sobre o setor.
 10. **(TP4)** Escolher, com critérios de desempenho, custo computacional e acessibilidade, um **LLM que rode localmente** e integrá-lo à API FastAPI.
 11. **(TP4)** Oferecer no app perguntas e respostas com fontes, resumo e sentimento de notícias e relatório de viabilidade, com respostas estruturadas (Response Models).
 12. **(TP4)** Tratar os erros da API de forma robusta e informativa (modelo carregando, entrada inválida, texto longo, prazo, falta de memória).
+13. **(TP5)** Implementar um **agente inteligente para tomada de decisão** que use os dados coletados para recomendar se e como instalar, com análises escolhidas pelo LLM conforme o objetivo do usuário.
+14. **(TP5)** Implementar **memória conversacional** para perguntas de acompanhamento sobre a recomendação e sobre os dados.
+15. **(TP5)** Integrar agente e memória a um **painel interativo** que mostre o ciclo completo de ciência de dados, com visualizações dos dados e dos insights da IA.
+16. **(TP5)** Gerar insights de ESG e ODS a partir dos dados: retorno por capital, CO₂ evitado, energia limpa e sentimento do setor.
 
 ## 4. Metas e indicadores de sucesso (KPIs)
 
-| Meta | Indicador | Meta | TP2 | TP3 | TP4 |
-|---|---|---|---|---|---|
-| Cobertura de dados | Locais com série climática completa | ≥ 5 capitais | 10 capitais, 366 dias | 10 capitais, 366 dias (série atualizada até 17/10/2026) | igual ao TP3 |
-| Dados de longo prazo | Capitais com irradiação mensal típica e plano inclinado | ≥ 5 | n/a | 10 capitais x 4 planos de inclinação (Selenium) | igual ao TP3 |
-| Qualidade dos dados | Ausentes em `ALLSKY_SFC_SW_DWN` | < 5% | 1,9% | 1,9% | 1,9% |
-| Conteúdo da web | Fontes raspadas e salvas em CSV/TXT | ≥ 2 fontes | 2 fontes, 30 notícias | 3 fontes; 54 notícias, 51 com texto completo (~24,6 mil palavras) | igual ao TP3 |
-| Páginas e navegação | Páginas acessíveis pelo menu | ≥ 4 | 1 (abas) | 7 páginas em 4 seções | 9 páginas em 4 seções (3 de IA) |
-| API | Rotas documentadas (Swagger) | ≥ 2 (GET e POST) | n/a | 15 rotas (11 GET, 1 POST, 1 DELETE e 2 utilitárias) | 20 rotas, todas com Response Model |
-| Integração app + API | Páginas que leem/enviam dados pela API | todas as que usam dados | n/a | todas (o app não lê `data/` diretamente) | todas, inclusive as de IA |
-| Robustez | Entradas inválidas rejeitadas com mensagem clara | Sim/Não | Sim (upload) | Sim (upload e API: 404/409/422) | Sim: formato único de erro; 404, 405, 409, 413, 422, 500, 502, 503 e 504 |
-| Preparação para LLM | Corpus em trechos com fonte e data | Sim/Não | n/a | 163 documentos (153 trechos de notícias + 10 fichas de local) | 164 documentos (+ ranking das capitais) |
-| **(TP4)** LLM local | Modelo executado na máquina, sem nuvem | Sim/Não | n/a | n/a | Sim: Qwen3-1.7B (Transformers + PyTorch), 3,2 GB na GPU |
-| **(TP4)** Escolha do modelo | Candidatos medidos nas tarefas do projeto | ≥ 3 | n/a | n/a | 5 LLMs + 1 classificador BERT |
-| **(TP4)** Qualidade do LLM | Sentimento (34 notícias rotuladas) / perguntas com fonte / relatórios sem número inventado | ≥ 70% / ≥ 80% / 100% | n/a | n/a | 79% / 100% (10 de 10, com citação) / 100% (3 de 3) |
-| **(TP4)** Tempo de resposta | Resposta do assistente (GPU) | ≤ 10 s | n/a | n/a | ~2 s (resumo ~3 s, relatório ~7 s) |
-| Qualidade de código | Testes automatizados passando | Sim/Não | 10 testes | 44 testes (API, parsers, LLM, app) | 93 testes (+ 1 opcional com o modelo real) |
+| Meta | Indicador | Meta | TP2 | TP3 | TP4 | TP5 |
+|---|---|---|---|---|---|---|
+| Cobertura de dados | Locais com série climática completa | ≥ 5 capitais | 10 capitais, 366 dias | 10 capitais, 366 dias (série atualizada até 17/10/2026) | igual ao TP3 | igual |
+| Dados de longo prazo | Capitais com irradiação mensal típica e plano inclinado | ≥ 5 | n/a | 10 capitais x 4 planos de inclinação (Selenium) | igual ao TP3 | igual; base de todas as ferramentas do agente |
+| Qualidade dos dados | Ausentes em `ALLSKY_SFC_SW_DWN` | < 5% | 1,9% | 1,9% | 1,9% | 1,9% |
+| Conteúdo da web | Fontes raspadas e salvas em CSV/TXT | ≥ 2 fontes | 2 fontes, 30 notícias | 3 fontes; 54 notícias, 51 com texto completo (~24,6 mil palavras) | igual ao TP3 | 54 notícias, **todas resumidas e classificadas pelo LLM** (lote de 4 min) |
+| Páginas e navegação | Páginas acessíveis pelo menu | ≥ 4 | 1 (abas) | 7 páginas em 4 seções | 9 páginas em 4 seções (3 de IA) | **Painel** (4 abas) como página inicial + 9 páginas em 4 seções |
+| API | Rotas documentadas (Swagger) | ≥ 2 (GET e POST) | n/a | 15 rotas (11 GET, 1 POST, 1 DELETE e 2 utilitárias) | 20 rotas, todas com Response Model | 29 rotas, todas com Response Model |
+| Integração app + API | Páginas que leem/enviam dados pela API | todas as que usam dados | n/a | todas (o app não lê `data/` diretamente) | todas, inclusive as de IA | todas, inclusive agente, conversas e painel |
+| Robustez | Entradas inválidas rejeitadas com mensagem clara | Sim/Não | Sim (upload) | Sim (upload e API: 404/409/422) | Sim: formato único de erro; 404, 405, 409, 413, 422, 500, 502, 503 e 504 | Sim, + 404 de conversa e de recomendação |
+| Preparação para LLM | Corpus em trechos com fonte e data | Sim/Não | n/a | 163 documentos (153 trechos de notícias + 10 fichas de local) | 164 documentos (+ ranking das capitais) | 164 documentos + 54 notícias com IA + simulações calculadas na hora |
+| **(TP4)** LLM local | Modelo executado na máquina, sem nuvem | Sim/Não | n/a | n/a | Sim: Qwen3-1.7B (Transformers + PyTorch), 3,2 GB na GPU | Sim, o mesmo modelo para agente, memória e notícias |
+| **(TP4)** Escolha do modelo | Candidatos medidos nas tarefas do projeto | ≥ 3 | n/a | n/a | 5 LLMs + 1 classificador BERT | igual |
+| **(TP4)** Qualidade do LLM | Sentimento (34 notícias rotuladas) / perguntas com fonte / relatórios sem número inventado | ≥ 70% / ≥ 80% / 100% | n/a | n/a | 79% / 100% (10 de 10, com citação) / 100% (3 de 3) | sentimento em lote: 79% (27 de 34); recomendações reais com 100% dos números conferidos |
+| **(TP4)** Tempo de resposta | Resposta do assistente (GPU) | ≤ 10 s | n/a | n/a | ~2 s (resumo ~3 s, relatório ~7 s) | agente ~12 s; chat com memória ~2 s |
+| Qualidade de código | Testes automatizados passando | Sim/Não | 10 testes | 44 testes (API, parsers, LLM, app) | 93 testes (+ 1 opcional com o modelo real) | 116 testes + chamadas reais registradas |
+| **(TP5)** Agente de decisão | Ferramentas sobre os dados; decisões tomadas pelo modelo | ≥ 5 ferramentas | n/a | n/a | n/a | 7 ferramentas; 5 a 7 decisões do modelo por recomendação, conforme o objetivo |
+| **(TP5)** Memória conversacional | Perguntas de acompanhamento entendidas (chamadas reais) | ≥ 80% | n/a | n/a | n/a | 3 de 3 no registro real ("e em Fortaleza?", "qual das duas tem mais sol?") |
+| **(TP5)** Painel | Etapas do ciclo visíveis e interação com a IA em uma tela | 5 etapas | n/a | n/a | n/a | 5 etapas + agente + chat + panorama + setor |
 
 ## 5. Escopo
 
@@ -111,13 +168,16 @@ acessível e com contexto sobre o setor.
 - **(TP3)** App Streamlit com 7 páginas e menu de navegação, consumindo a API.
 - **(TP3)** Preparação dos dados para LLM e planejamento dos casos de uso.
 - **(TP4)** LLM local (HuggingFace Transformers) integrado à API: resumo, sentimento, perguntas e respostas com fontes e relatório de viabilidade; tratamento de erros padronizado.
+- **(TP5)** Agente consultor com 7 ferramentas sobre os dados (dimensionamento, finanças com Fio B, sazonalidade, CO₂, benchmark, notícias), decisões pelo LLM e recomendação conferida.
+- **(TP5)** Memória conversacional (janela, resumo, fatos, reescrita da pergunta) e notícias processadas em lote pelo LLM.
+- **(TP5)** Painel interativo com o ciclo completo de ciência de dados.
 - Repositório Git, testes automatizados e configuração para deploy.
 
 **Fora do escopo (etapas futuras):**
 
 - Busca semântica com embeddings e ajuste fino (*fine-tuning*) do modelo com dados do setor.
 - Modelo de geração detalhado (orientação do telhado diferente do norte, sombreamento, degradação).
-- Retorno financeiro completo (payback, financiamento, regras de compensação da ANEEL).
+- Financiamento, troca de inversor e tarifa por distribuidora (o payback do TP5 já considera Fio B, degradação e manutenção).
 - Geocodificação de endereço e mapa interativo.
 - Autenticação de usuários e controle de acesso na API (hoje qualquer cliente pode enviar e remover medições).
 
@@ -184,6 +244,9 @@ que une clima, estimativa de geração, notícias do setor e dados do próprio u
 | **(TP4)** LLM inventar números ou fatos | Números sempre calculados pela API; o LLM só explica e resume com base no contexto recuperado, citando as fontes; no relatório, cada número do texto é conferido com a API e o app avisa se algum não confere |
 | **(TP4)** Máquina sem GPU ou com pouca memória | Modelo de 1,7 B parâmetros (3,2 GB em float16); escolha automática de GPU/CPU; modelo trocável por variável de ambiente (0,5 B ocupa 1 GB); erros 503 explicativos se faltar memória |
 | **(TP4)** Modelo lento travar a API | Carga em segundo plano, uma inferência por vez com fila limitada (503) e prazo por geração (504) |
+| **(TP5)** Agente escrever conclusões qualitativas erradas ("potencial elevado" em Manaus) | Rótulos qualitativos calculados entram nos fatos; números conferidos após a geração; os indicadores do painel vêm direto das ferramentas |
+| **(TP5)** Memória confundir cidades ou herdar contexto em mudança de assunto | Reescrita com exemplos; regra só em perguntas de acompanhamento; simulação calculada para a cidade da pergunta; a recomendação de outra cidade vai para o fim do contexto |
+| **(TP5)** Premissas de custo e regulação mudarem | Premissas com fonte, devolvidas pela API e mostradas no painel; custo, tarifa, reajuste e potência editáveis |
 | Usuário confundir a estimativa com projeto de engenharia | Premissas e limitações explicitadas na interface e na documentação |
 | Escopo crescer demais | Priorizar residencial/pequeno negócio e funcionalidades do enunciado |
 
@@ -193,6 +256,25 @@ que une clima, estimativa de geração, notícias do setor e dados do próprio u
 |---|---|---|
 | Business Understanding | Project Charter, metodologia | Concluído (TP1), revisado no TP2 e no TP3 |
 | Data Acquisition and Understanding | NASA POWER, scrapers BS4, Selenium (CRESESB), Data Summary Report | Concluído no TP2, ampliado no TP3 |
-| Deployment | App com múltiplas páginas + API FastAPI, Git, testes e config de deploy | TP3, ampliado no TP4 (LLM local na API) |
-| Modeling | Estimativa com longo prazo e inclinação (TP3); escolha e avaliação do LLM local; Q&A, resumo, sentimento e relatório | Concluído no TP4 |
-| Customer Acceptance | Validação com usuários-alvo | Entrega final |
+| Modeling | Estimativa com longo prazo e inclinação (TP3); escolha e avaliação do LLM local; Q&A, resumo, sentimento e relatório (TP4); agente de decisão, memória e notícias em lote (TP5) | Concluído no TP5 |
+| Deployment | App + API FastAPI (TP3), LLM local na API (TP4), painel final com agente e chat (TP5) | Concluído no TP5 |
+| Customer Acceptance | Chamadas reais registradas e telas do painel com o modelo carregado (`docs/evidencias/`); apresentação da solução ([docs/apresentacao_solucao.md](../apresentacao_solucao.md)) | Entrega final (TP5); validação com usuários reais fica como próximo passo |
+
+## 12. Resultados e impacto em ESG e ODS (TP5)
+
+- **Insight 1 (ODS 7.1, acesso a energia acessível):** com 300 kWh/mês e R$ 0,95/kWh, o
+  sistema se paga em **2,3 anos em Fortaleza** e em **3,1 anos em Manaus e Curitiba**, já com o
+  Fio B. Para um equipamento que dura 25 anos, a energia solar é viável em todas as capitais
+  analisadas; a decisão é *quanto* e *quando*, não *se*.
+- **Insight 2 (sazonalidade):** no Sul o inverno pesa: em Porto Alegre o melhor mês gera
+  2,1 vezes o pior, e em Curitiba 1,5 vez; no Nordeste a geração é quase constante. Os créditos
+  dos meses de sol cobrem os meses fracos, então o dimensionamento deve olhar o ano, não o mês.
+- **Insight 3 (ODS 13 em perspectiva):** como a matriz elétrica brasileira já é pouco poluente
+  (38,5 kg de CO₂ por MWh), um sistema residencial evita só ~110 a 170 kg de CO₂ por ano. O
+  maior impacto social da solução é **econômico e de acesso (ODS 7)**; o climático existe,
+  mas é menor do que em países com matriz fóssil. A solução mostra isso com transparência.
+- **Insight 4 (setor):** 52% das notícias coletadas são positivas para quem quer instalar e só
+  2% negativas, segundo o LLM. É um sinal de mercado favorável, mas as fontes são do próprio
+  setor e o modelo subestima as negativas (seção 7.2 do Data Summary Report).
+- **Governança (G do ESG):** decisões rastreáveis (passos e probabilidades do agente), números
+  conferidos, fontes citadas, premissas com origem, dados do usuário que não saem da máquina.

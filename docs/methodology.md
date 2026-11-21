@@ -8,15 +8,15 @@ CRISP-DM, preocupações de gestão de equipe e de infraestrutura.
 
 ## Tabela de correspondência
 
-| CRISP-DM | TDSP | Diretório no repositório | Status no TP4 |
+| CRISP-DM | TDSP | Diretório no repositório | Status no TP5 (final) |
 |---|---|---|---|
-| Business Understanding | Business Understanding | `docs/project/project_charter.md`, `docs/methodology.md` | Revisado: o que o LLM local resolve (Charter, seção 2.2) |
-| Data Understanding | Data Acquisition and Understanding | `src/data_acquisition/`, `data/raw/`, `docs/data_report/data_summary_report.md` | Sem mudança nas fontes; criados os dados de avaliação do LLM (`data/avaliacao/`) |
-| Data Preparation | Data Acquisition and Understanding | `src/data_processing/`, `src/repositorio.py`, `data/processed/` | Corpus com ranking das capitais; recuperação com regras de metadados |
-| Modeling | Modeling | `src/data_processing/climate.py`, `src/llm/` | LLM local (Qwen3-1.7B) escolhido entre 6 modelos; resumo, sentimento, perguntas e relatório |
-| Evaluation | Modeling / Model Evaluation | `tests/`, `src/llm/avaliacao.py`, `docs/avaliacao/` | Bancada de modelos (sentimento, resumo, perguntas, relatório, custo); 93 testes |
-| Deployment | Deployment | `app.py`, `paginas/`, `src/api/`, `requirements.txt` | LLM servido pela API FastAPI, 9 páginas, erros padronizados |
-| (sem equivalente) | Customer Acceptance | (sem equivalente) | Não iniciado |
+| Business Understanding | Business Understanding | `docs/project/project_charter.md`, `docs/methodology.md` | Concluído: como dados, IA e engenharia de prompts resolvem o problema (Charter, seções 2.3, 2.4 e 12) |
+| Data Understanding | Data Acquisition and Understanding | `src/data_acquisition/`, `data/raw/`, `docs/data_report/data_summary_report.md` | Concluído: linhagem dos dados até o painel (DSR, seção 11) |
+| Data Preparation | Data Acquisition and Understanding | `src/data_processing/`, `src/repositorio.py`, `data/processed/` | Notícias enriquecidas pelo LLM em lote; simulações calculadas para o chat |
+| Modeling | Modeling | `src/data_processing/viabilidade.py`, `src/llm/` | Agente de decisão (7 ferramentas) e memória conversacional sobre o LLM local |
+| Evaluation | Modeling / Model Evaluation | `tests/`, `docs/evidencias/`, `docs/avaliacao/` | 116 testes com modelo falso + chamadas reais com o modelo carregado registradas |
+| Deployment | Deployment | `app.py`, `paginas/painel.py`, `src/api/`, `requirements.txt` | Painel final (página inicial) consumindo a API com 29 rotas |
+| (sem equivalente) | Customer Acceptance | `docs/apresentacao_solucao.md`, `docs/evidencias/` | Apresentação e argumentação da solução; validação com usuários reais fica como próximo passo |
 
 ## Como cada fase se aplica a este projeto
 
@@ -60,5 +60,14 @@ cálculos e executa o LLM local, e o **app Streamlit com 9 páginas** (`app.py` 
 Cloud), o app sobe a própria API em uma thread. Dependências fixadas em
 `requirements.txt` e versionamento com Git.
 
-**Customer Acceptance.** Validação com usuários do público-alvo (residencial e pequenos
-negócios), planejada para a entrega final.
+**Modeling e Deployment no TP5.** O LLM deixou de ser só uma ferramenta de texto e virou o
+"cérebro" de um **agente de decisão**: a cada passo ele escolhe, por decodificação restrita, a
+próxima análise entre 7 ferramentas que calculam sobre os dados coletados
+(`src/data_processing/viabilidade.py`), e no fim escreve a recomendação. Um **chat com memória**
+(janela, resumo e fatos) responde as perguntas seguintes. Tudo aparece em um **painel** que
+mostra as 5 etapas do ciclo ([Agente e memória](agente_e_memoria.md)).
+
+**Customer Acceptance.** A entrega final traz a apresentação da solução
+([apresentacao_solucao.md](apresentacao_solucao.md)), chamadas reais registradas e telas do
+painel com o modelo carregado ([evidencias/](evidencias/chamadas_reais_api.md)). A validação
+com usuários reais do público-alvo (residencial e pequenos negócios) fica como próximo passo.

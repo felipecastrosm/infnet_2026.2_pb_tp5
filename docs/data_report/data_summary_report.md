@@ -1,8 +1,15 @@
-# Data Summary Report: Solar Viável (TP4)
+# Data Summary Report: Solar Viável (TP5, versão final)
 
 Este relatório descreve as fontes de dados do projeto, como foram coletadas, seu
-conteúdo, sua qualidade e o objetivo de uso de cada uma no aplicativo e na API.
+conteúdo, sua qualidade, o objetivo de uso de cada uma e, desde o TP5, **como elas foram
+integradas ao longo do ciclo completo**, da coleta à recomendação gerada pela IA (seção 11).
 
+> **O que mudou no TP5:** dois novos dados derivados: as **54 notícias resumidas e
+> classificadas pelo LLM local em lote** (`noticias_ia.csv`, seção 7.2) e as **conversas com
+> memória** (seção 7.3); premissas externas usadas na análise de viabilidade, com fonte
+> (seção 7.4); e a **linhagem dos dados** (seção 11), que mostra por onde cada fonte passa
+> até chegar ao painel, ao agente consultor e ao chat.
+>
 > **O que mudou no TP4:** o corpus ganhou um documento de **ranking das capitais** (seção 7)
 > e foram criados os **dados de avaliação do LLM**: 34 notícias rotuladas à mão e 12
 > perguntas com resposta esperada (seção 7.1). As fontes coletadas não mudaram.
@@ -22,8 +29,10 @@ conteúdo, sua qualidade e o objetivo de uso de cada uma no aplicativo e na API.
 | 2 | **CRESESB/SunData (TP3)** | Médias mensais de longo prazo (página dinâmica com formulário) | `src/data_acquisition/cresesb_sundata.py` (**Selenium** + Beautiful Soup) | `data/raw/cresesb_sundata_capitais.csv` | Página *Potencial de longo prazo*; rotas `/irradiacao-longo-prazo`, `/estimativa` (padrão) |
 | 3 | ABSOLAR, notícias | Texto semiestruturado (HTML) | `src/data_acquisition/absolar_scraper.py` (Beautiful Soup) | `data/raw/absolar_noticias.csv`, `absolar_corpus.txt` | Página *Notícias*; rota `/noticias`; corpus LLM |
 | 4 | Canal Solar, notícias | Texto semiestruturado (HTML) | `src/data_acquisition/canalsolar_scraper.py` (Beautiful Soup) | `data/raw/canalsolar_noticias.csv`, **`canalsolar_corpus.txt` (TP3)** | Página *Notícias*; rota `/noticias`; corpus LLM |
-| 5 | Medições do usuário | Série temporal (CSV ou formulário) | Página *Meus dados* → `POST /medicoes` | `data/processed/medicoes_usuarios.csv` (fora do Git) | Aparecem como locais em `/locais` e `/clima` |
-| 6 | **Corpus para LLM (TP3)** | Documentos de texto (derivado) | `src/data_processing/llm_prep.py` | `data/processed/corpus_llm.jsonl` | Assistente (*Pergunte ao Solar Viável*) e página *Modelo local*; rotas `/llm/perguntar`, `/llm/corpus`, `/llm/contexto` |
+| 5 | Medições do usuário | Série temporal (CSV ou formulário) | Página *Meus dados*, via `POST /medicoes` | `data/processed/medicoes_usuarios.csv` (fora do Git) | Aparecem como locais em `/locais` e `/clima` |
+| 6 | **Corpus para LLM (TP3)** | Documentos de texto (derivado) | `src/data_processing/llm_prep.py` | `data/processed/corpus_llm.jsonl` | Assistente (*Pergunte ao Solar Viável*) e página *Modelo local*; rotas `/llm/perguntar`, `/llm/corpus`, `/llm/contexto`, `/conversas` |
+| 7 | **Notícias com IA (TP5)** | Resumo e sentimento por notícia (derivado pelo LLM) | `src/llm/enriquecer_noticias.py` (Qwen3-1.7B local, em lote) | `data/processed/noticias_ia.csv` | Painel, aba *Setor solar com IA*; ferramenta `noticias_setor` do agente; rotas `/noticias/ia`, `/painel` |
+| 8 | **Conversas (TP5)** | Histórico e memória de cada conversa (derivado) | `src/llm/memoria.py` | `data/processed/conversas/*.json` (fora do Git) | Chat com memória no Painel e em *Pergunte ao Solar Viável*; rotas `/conversas` |
 
 Todas as coletas rodam **fora do app**, em scripts próprios. A API lê os arquivos salvos e o
 app consome a API. Por isso o app é rápido e continua funcionando mesmo se uma fonte sair do
@@ -114,7 +123,7 @@ O SunData às vezes devolve pontos de grade no oceano, sem UF.
 | `distancia_km` | km | Distância até a coordenada consultada |
 | `plano` | texto | `Plano Horizontal`, `Ângulo igual a latitude`, `Maior média anual` ou `Maior mínimo mensal` |
 | `inclinacao_graus` | ° | Inclinação do painel (voltado para o norte) |
-| `jan` … `dez` | kWh/m²/dia | Irradiação diária média do mês |
+| `jan` a `dez` | kWh/m²/dia | Irradiação diária média do mês |
 | `media_anual`, `delta` | kWh/m²/dia | Média do ano e diferença entre o maior e o menor mês |
 | `estacao_referencia` | booleano | Estação usada pelo app/API para a capital |
 
@@ -170,7 +179,7 @@ da listagem) e `texto` (corpo da matéria). `absolar_corpus.txt` reúne título 
 **Dicionário:** `titulo`, `url`, `categoria` (Mercado & Investimentos 15, Política &
 Regulação 7, Mercado Internacional 4, Projetos & Aplicações 2, Segurança Pública 2),
 `resumo` (linha fina), `autor`, **`data` (publicação, TP3)**, **`tags` (separadas por `;`,
-TP3)**, **`texto` (corpo, TP3)** e `coletado_em`. Legendas de foto ("Foto: …") são
+TP3)**, **`texto` (corpo, TP3)** e `coletado_em`. Legendas de foto ("Foto: ...") são
 descartadas. `canalsolar_corpus.txt` reúne título e texto.
 
 ## 6. Medições do usuário (fonte 5, agora via API)
@@ -222,6 +231,60 @@ Limitações: um único anotador, conjunto pequeno e desequilibrado (reflete o v
 pró-solar das fontes); os rótulos de algumas notícias são discutíveis (ex.: reajuste de
 tarifa é negativo para o consumidor, mas melhora o retorno de quem gera a própria energia).
 
+### 7.2 Notícias resumidas e classificadas pelo LLM (TP5)
+
+`python -m src.llm.enriquecer_noticias` passa cada uma das 54 notícias (título + texto, até
+900 palavras) pelo LLM local duas vezes: um **resumo** de até 60 palavras e o **sentimento do
+ponto de vista de quem quer instalar energia solar**, com a probabilidade de cada rótulo e
+uma frase de justificativa. O processamento é feito **uma vez, em lote** (4 min 5 s no
+Apple M, média de 4,5 s por notícia), e não a cada visita ao painel.
+
+| Coluna | Descrição |
+|---|---|
+| `url`, `fonte`, `titulo`, `data` | Chave e identificação da notícia (a mesma de `/noticias`) |
+| `n_palavras` | Palavras enviadas ao modelo (média 437) |
+| `resumo_ia` | Resumo gerado (média de 54 palavras, taxa de compressão de ~12%) |
+| `sentimento`, `confianca` | Rótulo escolhido e sua probabilidade |
+| `p_positivo`, `p_neutro`, `p_negativo` | Probabilidade de cada rótulo, calculada a partir das log-probabilidades do modelo |
+| `justificativa` | Uma frase do modelo explicando o rótulo |
+| `modelo`, `tempo_s`, `processado_em` | Rastreabilidade: qual modelo, quanto tempo e quando |
+
+| Fonte | Positivo | Neutro | Negativo |
+|---|---|---|---|
+| ABSOLAR | 15 | 9 | 0 |
+| Canal Solar | 13 | 16 | 1 |
+| **Total** | **28 (52%)** | **25 (46%)** | **1 (2%)** |
+
+**Qualidade:** comparado com as 34 notícias rotuladas à mão no TP4 (seção 7.1), o modelo acerta
+**79%** (27 de 34): acerta todas as 16 positivas e 10 das 11 neutras, mas classifica como
+neutras 6 das 7 negativas. Ou seja, o painel **subestima** as notícias negativas; isso aparece
+como limitação no painel e na seção 10. A ABSOLAR, associação do setor, é mais positiva que o
+Canal Solar, o que confirma o viés de fonte já apontado.
+
+### 7.3 Conversas com memória (TP5)
+
+Cada conversa é um JSON em `data/processed/conversas/` (fora do Git, expira após 24 h sem uso):
+`turnos` (pergunta, pergunta reescrita, resposta, fontes citadas), `resumo` (escrito pelo LLM
+quando a janela de 3 trocas enche), `fatos` (cidade em foco, cidades citadas, consumo,
+potência, tarifa, extraídos por regras) e, se a conversa nasceu de uma recomendação, o `id` e o
+texto dela. Não guarda dados pessoais além do que o usuário digita.
+
+### 7.4 Premissas externas da análise de viabilidade (TP5)
+
+Os cálculos do agente (`src/data_processing/viabilidade.py`) usam os dados coletados e
+algumas premissas de mercado e regulação, todas editáveis ou documentadas na resposta da API
+(`premissas`):
+
+| Premissa | Valor | Fonte |
+|---|---|---|
+| Custo de instalação | R$ 3.000 por kWp (editável) | Greener, 1º sem. 2025: sistema residencial de 4 kWp por ~R$ 11.360 (R$ 2,84/Wp), mais a alta de 7% no 1º sem. 2026 (pv magazine) |
+| Fator de emissão da rede | 0,0385 tCO₂/MWh | MCTI, fator médio anual do Sistema Interligado Nacional em 2023 |
+| Fio B (Lei 14.300/2022) | 75% cobrado em 2027, 90% em 2028, 100% depois; Fio B = 28% da tarifa; 30% da geração consumida na hora | Lei 14.300/2022 e valores típicos residenciais |
+| Custo de disponibilidade | 30, 50 ou 100 kWh/mês (mono, bi, trifásica) | ANEEL, REN 1.000/2021 |
+| Degradação e vida útil | 0,5% ao ano, 25 anos | Garantia típica de módulos |
+| Manutenção | 1% do investimento por ano | Estimativa usual de operação e manutenção |
+| Módulo | 550 W, ~2,6 m² | Módulo comercial comum |
+
 ## 8. Acesso aos dados pela API (TP3)
 
 Os dados acima são expostos pela API FastAPI (`src/api/main.py`), documentada em
@@ -253,6 +316,11 @@ diretamente: todas as páginas buscam e enviam dados pela API.
 5. **Permitir que o usuário traga seus próprios dados** e os compare com os da NASA.
 6. **(TP4)** Servir de base para perguntas e respostas, resumos, classificação de
    sentimento e relatórios gerados por LLM.
+7. **(TP5)** Alimentar o **agente consultor**: dimensionar o sistema, calcular investimento,
+   payback com Fio B, sazonalidade, CO₂ evitado e benchmark entre capitais, e dar ao LLM os
+   fatos para escrever uma recomendação conferida.
+8. **(TP5)** Mostrar no **painel** o retrato do setor (sentimento das notícias por fonte e por
+   semana) e o panorama das capitais, e responder perguntas de acompanhamento com memória.
 
 ## 10. Qualidade e limitações
 
@@ -265,8 +333,12 @@ diretamente: todas as páginas buscam e enviam dados pela API.
 - **CRESESB:** representa um ano típico (média histórica), não um ano específico, e a
   estação de referência fica a até ~8 km da coordenada. As inclinações supõem painéis
   voltados para o norte.
-- **Modelo de geração simplificado:** não considera orientação diferente do norte,
-  sombreamento nem degradação dos painéis.
+- **Modelo de geração simplificado:** não considera orientação diferente do norte nem
+  sombreamento. Desde o TP5 a análise financeira considera degradação (0,5% ao ano), Fio B e
+  manutenção, mas não troca de inversor, financiamento nem reajuste tarifário (opcional, 0%
+  por padrão).
+- **Sentimento pelo LLM (TP5):** 79% de acerto nas notícias rotuladas; as negativas tendem a
+  sair como neutras, então o painel subestima o noticiário negativo.
 - **Notícias:** 54 itens, um retrato de algumas semanas. A amostra cresce a cada coleta
   acumulada, mas ainda não é uma série histórica. Mudanças no HTML exigem ajustar os
   seletores (os testes dos parsers acusam a quebra).
@@ -277,3 +349,23 @@ diretamente: todas as páginas buscam e enviam dados pela API.
 - **Direitos:** o app exibe título, link, linha fina e o texto extraído (com link para a
   fonte) para fins acadêmicos. Os textos são usados para análise e preparação de LLM, e as
   respostas do TP4 devem citar a fonte.
+
+## 11. Integração dos dados no ciclo completo (TP5)
+
+Como cada fonte coletada chega até o usuário. Nenhuma etapa do app lê os arquivos
+diretamente: tudo passa pela API.
+
+| Fonte coletada | Processamento | Análise | IA (LLM local) | Apresentação |
+|---|---|---|---|---|
+| NASA POWER (API REST), 3.660 dias-cidade | `-999` vira ausente; médias por cidade e mês; fichas e ranking em texto | Último ano x longo prazo (anomalia de até +11%) | Fichas no corpus do chat; alerta do agente quando o último ano foi atípico | Painel (ferramenta *Potencial solar*), *Clima e geração* |
+| CRESESB/SunData (Selenium), 120 séries | Estação de referência por capital; 4 planos de inclinação | Geração mês a mês, dimensionamento, payback com Fio B, sazonalidade, CO₂, benchmark das 10 capitais | Fatos de cada ferramenta do agente; simulação calculada para a cidade e a potência lembradas no chat | Painel (indicadores, saldo em 25 anos, geração x consumo, panorama e mapa de calor), *Potencial de longo prazo* |
+| ABSOLAR e Canal Solar (Beautiful Soup), 54 notícias | Trechos de 220 palavras (153), texto completo | Frequência de palavras, publicações por semana | Resumo e sentimento em lote (`noticias_ia.csv`); trechos citados no chat; destaques na recomendação | Painel (aba *Setor solar com IA*), *Notícias do setor* |
+| Usuário: cidade, consumo, tarifa, objetivo, perguntas | Validação (Pydantic) | Perfil enviado às ferramentas | O objetivo orienta as decisões do agente; as perguntas atualizam a memória (fatos, resumo) | Recomendação, passos do agente e chat |
+
+**Exemplo real (registrado em [docs/evidencias/chamadas_reais_api.md](../evidencias/chamadas_reais_api.md)):**
+para Curitiba, 250 kWh/mês, com a preocupação "a geração cai muito no inverno?", o agente
+escolheu potencial, comparação com as capitais, notícias, dimensionamento, finanças,
+sazonalidade e impacto ambiental; a irradiação do CRESESB virou 2,2 kWp, o pior mês (junho)
+e o payback; o LLM escreveu a recomendação, e os números dela conferiram com os cálculos.
+No chat, "E em Fortaleza, como seria?" foi reescrita com a potência lembrada e respondida
+com uma simulação calculada para Fortaleza.
