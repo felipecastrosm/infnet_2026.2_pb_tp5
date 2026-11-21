@@ -85,3 +85,15 @@ def carregar_corpus_llm() -> pd.DataFrame:
     if not caminho.exists():
         return pd.DataFrame(columns=["id", "tipo", "fonte", "titulo", "url", "data", "cidade", "texto", "n_palavras"])
     return pd.read_json(caminho, lines=True, dtype={"data": str})
+
+
+def carregar_noticias_ia() -> pd.DataFrame:
+    """Notícias resumidas e classificadas pelo LLM local em lote (src/llm/enriquecer_noticias.py)."""
+    caminho = PROCESSED_DIR / "noticias_ia.csv"
+    if not caminho.exists():
+        return pd.DataFrame(
+            columns=["url", "fonte", "titulo", "data", "resumo_ia", "sentimento", "confianca", "justificativa", "modelo"]
+        )
+    df = pd.read_csv(caminho, keep_default_na=False)
+    df["data"] = pd.to_datetime(df["data"], errors="coerce")
+    return df
